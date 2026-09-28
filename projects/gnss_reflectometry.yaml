@@ -1,0 +1,9 @@
+title: GNSS Reflectometry Example
+author: [Eshanta Mishra, Alex Hamilton, Henry Berglund]
+github: https://github.com/EarthScope/GeoLab-learning-hub
+maintainer contact: help@earthscope.org
+
+summary: This notebook runs through some basic things you can do with GNSS Reflectometry using data from the NGF archive. 
+nbgitpuller: https://geolab.earthscope.cloud/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2FEarthScope%2FGeoLab-learning-hub&urlpath=tree%2FGeoLab-learning-hub%2Freflectometry%2Fgnss-interferometric-reflectometry.ipynb&branch=main
+
+tags: [GNSS, reflectometry, earthscope_sdk]

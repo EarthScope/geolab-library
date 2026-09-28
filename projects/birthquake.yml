@@ -1,0 +1,13 @@
+title: Birthquake
+author: [Sophia Parafina, Author A]
+github: https://github.com/EarthScope/GeoLab-learning-hub
+author_institution: EarthScope Consortium
+maintainer contact: help@earthscope.org
+thumbnail: image.png
+
+summary: This widget lets you enter any date (your birthday!) and displays a map showing the largest 3 earthquakes worldwide on that day.
+nbgitpuller: https://geolab.earthscope.cloud/
+tags: [event service, seismology, earthquakes]
+recommended_image: geolab_default
+recommended_resource_allocation: 4GB
+citation:  <text here>

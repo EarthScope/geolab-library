@@ -1,0 +1,11 @@
+version: 1
+extends:
+ - https://raw.githubusercontent.com/EarthScope/CloudDocs/main/es_config/earthscope.yml
+project:
+  title: EarthScope Community Library
+  copyright: '2024-2026'
+  github: EarthScope/CommunityLibrary
+
+  toc:
+    - file: welcome.md
+    - file: project_tiles.md

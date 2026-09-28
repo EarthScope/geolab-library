@@ -1,0 +1,7 @@
+[build]
+  publish = "publish"
+  command = "curl -sSfL https://raw.githubusercontent.com/EarthScope/docs.earthscope.org/main/scripts/build-docs.sh | bash"
+
+[build.environment]
+  NODE_VERSION = "24"
+  BASE_URL = "/library"
