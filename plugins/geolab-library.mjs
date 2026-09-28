@@ -1,0 +1,344 @@
+/**
+ * GeoLab Library gallery.
+ *
+ * Provides a {geolab-library} directive that places an anywidget on the page.
+ * library_listing.py (a document-stage transform) fills the widget's
+ * `model.items` from projects/*.yml; this file's `render` then draws the
+ * gallery in the browser: text search, tag/author filters, "show more"
+ * paging, lazy thumbnails, and filter state kept in the URL.
+ *
+ * Only the current page of cards is ever in the DOM, so the page stays
+ * light however many projects the library holds.
+ */
+
+const PLUGIN_PATH = decodeURIComponent(new URL(import.meta.url).pathname);
+const PAGE_SIZE = 24;
+const TOP_TAGS = 12;
+// URL query parameters that hold the filter state.
+const PARAMS = { q: 'q', tag: 'tag', author: 'author' };
+
+// Relative POSIX path from directory `fromDir` to file `toFile`. MyST resolves
+// a widget's `esm` against the page's folder, so the directive needs this.
+function relativePath(fromDir, toFile) {
+  const from = fromDir.split('/').filter(Boolean);
+  const to = toFile.split('/').filter(Boolean);
+  let i = 0;
+  while (i < from.length && i < to.length && from[i] === to[i]) i++;
+  return [...Array(from.length - i).fill('..'), ...to.slice(i)].join('/');
+}
+
+// --- Browser ---
+
+const STYLE = `
+.gl { --gl-border:#d0d7de; --gl-muted:#57606a; --gl-card:#fff; --gl-chip:#eef2f6;
+      --gl-chip-on:#0969da; --gl-chip-on-fg:#fff; --gl-link:#0969da; --gl-thumb:#f0f3f6;
+      font-size:0.95rem; margin:1rem 0; }
+.gl.gl-dark { --gl-border:#3d444d; --gl-muted:#9198a1; --gl-card:#151b23; --gl-chip:#262c36;
+      --gl-chip-on:#4493f8; --gl-chip-on-fg:#0d1117; --gl-link:#4493f8; --gl-thumb:#212830; }
+.gl-search { width:100%; max-width:32rem; box-sizing:border-box; padding:0.55rem 0.75rem;
+      font:inherit; color:inherit; background:transparent; border:1px solid var(--gl-border);
+      border-radius:6px; }
+.gl-facets { margin:0.75rem 0; display:grid; gap:0.4rem; }
+.gl-facet-row { display:flex; flex-wrap:wrap; gap:0.35rem; align-items:center; }
+.gl-facet-label { font-size:0.8rem; font-weight:600; color:var(--gl-muted); min-width:4rem; }
+.gl-chip { font:inherit; font-size:0.78rem; line-height:1.4; padding:0.1rem 0.55rem;
+      border:1px solid transparent; border-radius:999px; background:var(--gl-chip);
+      color:inherit; cursor:pointer; }
+.gl-chip[aria-pressed="true"] { background:var(--gl-chip-on); color:var(--gl-chip-on-fg); }
+.gl-chip:focus-visible, .gl-more:focus-visible, .gl-search:focus-visible,
+.gl-title a:focus-visible { outline:2px solid var(--gl-chip-on); outline-offset:2px; }
+.gl-count { font-size:0.8rem; color:var(--gl-muted); background:none; }
+.gl-link { font:inherit; font-size:0.8rem; background:none; border:none; padding:0;
+      color:var(--gl-link); cursor:pointer; }
+.gl-status { font-size:0.85rem; color:var(--gl-muted); margin:0.5rem 0; }
+.gl-grid { display:grid; gap:1rem; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); }
+.gl-card { display:flex; flex-direction:column; border:1px solid var(--gl-border);
+      border-radius:8px; background:var(--gl-card); overflow:hidden; }
+.gl-thumb { aspect-ratio:16/9; background:var(--gl-thumb); display:flex; align-items:center;
+      justify-content:center; color:var(--gl-muted); font-size:1.6rem; font-weight:600; }
+.gl-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+.gl-body { padding:0.75rem; display:flex; flex-direction:column; gap:0.4rem; flex:1; }
+.gl-title { margin:0; font-size:1rem; font-weight:600; line-height:1.3; }
+.gl-title a { color:inherit; text-decoration:none; }
+.gl-title a:hover { text-decoration:underline; }
+.gl-desc { margin:0; font-size:0.85rem; display:-webkit-box; -webkit-line-clamp:3;
+      -webkit-box-orient:vertical; overflow:hidden; }
+.gl-authors { font-size:0.8rem; color:var(--gl-muted); }
+.gl-authors .gl-link { font-size:inherit; }
+.gl-tags { display:flex; flex-wrap:wrap; gap:0.25rem; margin-top:auto; padding-top:0.25rem; }
+.gl-actions { display:flex; gap:0.75rem; font-size:0.8rem; padding-top:0.25rem; }
+.gl-actions a { color:var(--gl-link); }
+.gl-more { display:block; margin:1.25rem auto 0; font:inherit; padding:0.45rem 1.1rem;
+      border:1px solid var(--gl-border); border-radius:6px; background:transparent;
+      color:inherit; cursor:pointer; }
+.gl-more[hidden] { display:none; }
+`;
+
+function h(tag, props = {}, ...children) {
+  const el = document.createElement(tag);
+  for (const [key, value] of Object.entries(props)) {
+    if (value === undefined || value === null || value === false) continue;
+    if (key === 'class') el.className = value;
+    else if (key.startsWith('on')) el.addEventListener(key.slice(2), value);
+    else el.setAttribute(key, value === true ? '' : value);
+  }
+  for (const child of children.flat()) {
+    if (child === null || child === undefined || child === false) continue;
+    el.append(child instanceof Node ? child : document.createTextNode(String(child)));
+  }
+  return el;
+}
+
+const norm = (s) => String(s ?? '').toLowerCase();
+
+/** Precompute lowercase search fields once per item. */
+function indexItems(items) {
+  return items.map((item) => ({
+    item,
+    title: norm(item.title),
+    tags: (item.tags ?? []).map(norm),
+    authors: (item.authors ?? []).map(norm),
+    desc: norm(item.description),
+  }));
+}
+
+/** Score an item against query terms: every term must match somewhere. */
+function score(entry, terms) {
+  let total = 0;
+  for (const term of terms) {
+    let best = 0;
+    if (entry.title.includes(term)) best = entry.title.startsWith(term) ? 6 : 4;
+    if (best < 3 && entry.tags.some((t) => t.includes(term))) best = 3;
+    if (best < 3 && entry.authors.some((a) => a.includes(term))) best = 3;
+    if (best < 1 && entry.desc.includes(term)) best = 1;
+    if (!best) return 0;
+    total += best;
+  }
+  return total;
+}
+
+/** Count how often each value of `field` occurs, most frequent first. */
+function countValues(items, field) {
+  const counts = new Map();
+  for (const item of items) for (const v of item[field] ?? []) counts.set(v, (counts.get(v) ?? 0) + 1);
+  return [...counts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+}
+
+function readState() {
+  const params = new URL(window.location).searchParams;
+  return {
+    q: params.get(PARAMS.q) ?? '',
+    tags: new Set(params.getAll(PARAMS.tag)),
+    authors: new Set(params.getAll(PARAMS.author)),
+  };
+}
+
+function writeState(state) {
+  const url = new URL(window.location);
+  for (const key of Object.values(PARAMS)) url.searchParams.delete(key);
+  if (state.q) url.searchParams.set(PARAMS.q, state.q);
+  for (const t of state.tags) url.searchParams.append(PARAMS.tag, t);
+  for (const a of state.authors) url.searchParams.append(PARAMS.author, a);
+  history.replaceState(history.state, '', url);
+}
+
+function render({ model, el }) {
+  const items = model.get('items') ?? [];
+  const entries = indexItems(items);
+  const tagCounts = countValues(items, 'tags');
+  const state = readState();
+  let shown = PAGE_SIZE;
+  let showAllTags = false;
+
+  const root = h('div', { class: 'gl' });
+  const search = h('input', {
+    class: 'gl-search',
+    type: 'search',
+    placeholder: `Search ${items.length} projects by title, summary, author, or tag`,
+    'aria-label': 'Search projects',
+    value: state.q,
+  });
+  const facets = h('div', { class: 'gl-facets' });
+  const status = h('div', { class: 'gl-status', role: 'status', 'aria-live': 'polite' });
+  const grid = h('div', { class: 'gl-grid' });
+  const more = h('button', { class: 'gl-more', type: 'button' });
+  root.append(h('style', {}, STYLE), search, facets, status, grid, more);
+  el.append(root);
+
+  // Follow the site's light/dark theme (the theme toggles `dark` on <html>).
+  const syncTheme = () => root.classList.toggle('gl-dark', document.documentElement.classList.contains('dark'));
+  const themeWatcher = new MutationObserver(syncTheme);
+  themeWatcher.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+  syncTheme();
+
+  function toggle(set, value) {
+    set.has(value) ? set.delete(value) : set.add(value);
+    shown = PAGE_SIZE;
+    update();
+  }
+
+  function chip(label, pressed, onclick, count) {
+    return h(
+      'button',
+      { class: 'gl-chip', type: 'button', 'aria-pressed': String(pressed), onclick },
+      label,
+      count !== undefined ? h('span', { class: 'gl-count' }, ` ${count}`) : null,
+    );
+  }
+
+  function results() {
+    const terms = norm(state.q).split(/\s+/).filter(Boolean);
+    const matches = [];
+    for (const entry of entries) {
+      const { item } = entry;
+      if (state.tags.size && ![...state.tags].every((t) => item.tags?.includes(t))) continue;
+      if (state.authors.size && ![...state.authors].every((a) => item.authors?.includes(a))) continue;
+      const s = terms.length ? score(entry, terms) : 1;
+      if (s) matches.push({ item, s });
+    }
+    matches.sort((a, b) => b.s - a.s || String(a.item.title).localeCompare(String(b.item.title)));
+    return matches.map((m) => m.item);
+  }
+
+  function renderFacets() {
+    const tagRow = h('div', { class: 'gl-facet-row' }, h('span', { class: 'gl-facet-label' }, 'Tags'));
+    const visible = showAllTags ? tagCounts : tagCounts.slice(0, TOP_TAGS);
+    // Always show selected tags, even when they're not among the most common.
+    const visibleNames = new Set(visible.map(([t]) => t));
+    const extra = [...state.tags].filter((t) => !visibleNames.has(t)).map((t) => [t, undefined]);
+    for (const [tag, count] of [...extra, ...visible]) {
+      tagRow.append(chip(tag, state.tags.has(tag), () => toggle(state.tags, tag), count));
+    }
+    if (tagCounts.length > TOP_TAGS) {
+      tagRow.append(
+        h('button', {
+          class: 'gl-link',
+          type: 'button',
+          onclick: () => { showAllTags = !showAllTags; renderFacets(); },
+        }, showAllTags ? 'Fewer tags' : `All ${tagCounts.length} tags`),
+      );
+    }
+    facets.replaceChildren(tagRow);
+    if (state.authors.size) {
+      const authorRow = h('div', { class: 'gl-facet-row' }, h('span', { class: 'gl-facet-label' }, 'Authors'));
+      for (const a of state.authors) authorRow.append(chip(a, true, () => toggle(state.authors, a)));
+      facets.append(authorRow);
+    }
+  }
+
+  function thumbnail(item) {
+    const fallback = () => h('div', { class: 'gl-thumb', 'aria-hidden': 'true' }, String(item.title ?? '?').trim().charAt(0).toUpperCase());
+    if (!item.thumbnail) return fallback();
+    const img = h('img', { src: item.thumbnail, alt: '', loading: 'lazy', decoding: 'async' });
+    const box = h('div', { class: 'gl-thumb' }, img);
+    img.addEventListener('error', () => box.replaceWith(fallback()), { once: true });
+    return box;
+  }
+
+  function card(item) {
+    const link = item.url ? { href: item.url, target: '_blank', rel: 'noopener' } : {};
+    const authors = item.authors ?? [];
+    return h(
+      'article',
+      { class: 'gl-card' },
+      thumbnail(item),
+      h(
+        'div',
+        { class: 'gl-body' },
+        h('h3', { class: 'gl-title' }, item.url ? h('a', link, item.title) : item.title),
+        authors.length
+          ? h('div', { class: 'gl-authors' }, authors.flatMap((a, i) => [
+              i ? ', ' : null,
+              h('button', { class: 'gl-link', type: 'button', title: `Show projects by ${a}`, onclick: () => toggle(state.authors, a) }, a),
+            ]))
+          : null,
+        item.description ? h('p', { class: 'gl-desc' }, item.description) : null,
+        (item.tags ?? []).length
+          ? h('div', { class: 'gl-tags' }, item.tags.map((t) => chip(t, state.tags.has(t), () => toggle(state.tags, t))))
+          : null,
+        h(
+          'div',
+          { class: 'gl-actions' },
+          item.url ? h('a', link, 'Open in GeoLab') : null,
+          item.github ? h('a', { href: item.github, target: '_blank', rel: 'noopener' }, 'Source') : null,
+        ),
+      ),
+    );
+  }
+
+  function update() {
+    const matches = results();
+    renderFacets();
+    grid.replaceChildren(...matches.slice(0, shown).map(card));
+    const filtered = state.q || state.tags.size || state.authors.size;
+    const count = filtered ? `${matches.length} of ${items.length} projects match` : `${items.length} projects`;
+    status.textContent = matches.length
+      ? (shown < matches.length ? `${count} · showing ${shown}` : count)
+      : 'No projects match these filters.';
+    more.hidden = shown >= matches.length;
+    more.textContent = `Show ${Math.min(PAGE_SIZE, matches.length - shown)} more`;
+    writeState(state);
+  }
+
+  let timer;
+  search.addEventListener('input', () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      state.q = search.value.trim();
+      shown = PAGE_SIZE;
+      update();
+    }, 120);
+  });
+  more.addEventListener('click', () => {
+    shown += PAGE_SIZE;
+    update();
+  });
+
+  update();
+
+  // Clean up when the widget leaves the page (client-side navigation), so
+  // our query parameters don't follow the reader to other pages.
+  let cleaned = false;
+  function cleanup() {
+    if (cleaned) return;
+    cleaned = true;
+    clearTimeout(timer);
+    themeWatcher.disconnect();
+    removalWatcher.disconnect();
+    const url = new URL(window.location);
+    if (Object.values(PARAMS).some((k) => url.searchParams.has(k))) {
+      for (const key of Object.values(PARAMS)) url.searchParams.delete(key);
+      history.replaceState(history.state, '', url);
+    }
+  }
+  const removalWatcher = new MutationObserver(() => {
+    if (!root.isConnected) cleanup();
+  });
+  removalWatcher.observe(document.body, { childList: true, subtree: true });
+  return cleanup;
+}
+
+// --- Build (runs in MyST, not the browser) ---
+
+const geolabLibraryDirective = {
+  name: 'geolab-library',
+  doc: 'Searchable gallery of GeoLab Library projects (items filled by library_listing.py).',
+  run(_data, vfile) {
+    const fromDir = vfile.path.replace(/\/[^/]*$/, '');
+    return [
+      {
+        type: 'anywidget',
+        esm: relativePath(fromDir, PLUGIN_PATH),
+        // `source` marks this widget for library_listing.py, which adds `items`.
+        model: { source: 'geolab', items: [] },
+        id: Math.random().toString(36).slice(2),
+      },
+    ];
+  },
+};
+
+export default {
+  name: 'GeoLab Library gallery',
+  directives: [geolabLibraryDirective],
+  render,
+};

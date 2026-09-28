@@ -1,21 +1,26 @@
 #!/usr/bin/env python3
-"""GeoLab Library: a `geolab` source for the myst-listing plugin.
+"""GeoLab Library: fills the {geolab-library} gallery with project data.
 
-Use `:::{listing}` with `:source: geolab`. Our document-stage transform fills
-any such placeholder's `items` with one entry per project YAML file in
-projects/; myst-listing then renders them and {searchfilter} filters them.
+The {geolab-library} directive (plugins/geolab-library.mjs) emits an anywidget
+node whose model has `source: geolab`. This document-stage transform sets that
+model's `items` to one entry per project YAML file; the widget renders them.
+
+Projects are read from projects/, or from the folder in $GEOLAB_PROJECTS_DIR
+(used to preview dummy data, see scripts/make_dummy_projects.py).
 """
 import argparse
 import json
+import os
 import pathlib
 import re
 import sys
 
 import yaml
 
-PLACEHOLDER = "listingPlaceholder"  # myst-listing's node type
-# Resolve relative to this file, not the current directory.
-PROJECTS = pathlib.Path(__file__).resolve().parent / "projects"
+WIDGET = "anywidget"  # node type emitted by {geolab-library}
+HERE = pathlib.Path(__file__).resolve().parent
+# Relative to this file, not the current directory.
+PROJECTS = HERE / os.environ.get("GEOLAB_PROJECTS_DIR", "projects")
 
 
 def as_list(value):
@@ -42,7 +47,7 @@ def thumbnail_url(metadata):
 
 
 def collect_project(path):
-    """One project file as a myst-listing item (or None if unreadable)."""
+    """One project file as a gallery item (or None if unreadable)."""
     try:
         metadata = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
     except Exception as err:
@@ -51,12 +56,11 @@ def collect_project(path):
     item = {
         "title": metadata.get("title") or path.stem,
         "description": metadata.get("summary"),
-        # Shown as a colored tag group via :tag-fields:, so authors are
-        # visible on the card and matched by the search filter.
         "authors": [str(a) for a in as_list(metadata.get("author"))],
         "tags": [str(t) for t in as_list(metadata.get("tags"))],
         "thumbnail": thumbnail_url(metadata),
         "url": metadata.get("nbgitpuller") or metadata.get("github"),
+        "github": metadata.get("github"),
     }
     return {key: value for key, value in item.items() if value}
 
@@ -76,13 +80,13 @@ def find_all_by_type(parent, type_):
 def run_transform(data):
     nodes = [
         node
-        for node in find_all_by_type(data, PLACEHOLDER)
-        if node.get("source") == "geolab"
+        for node in find_all_by_type(data, WIDGET)
+        if (node.get("model") or {}).get("source") == "geolab"
     ]
     if nodes:
         items = collect_projects()
         for node in nodes:
-            node["items"] = items
+            node["model"]["items"] = items
     return data
 
 
