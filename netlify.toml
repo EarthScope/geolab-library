@@ -1,6 +1,6 @@
 [build]
   publish = "publish"
-  command = "curl -sSfL https://raw.githubusercontent.com/EarthScope/docs.earthscope.org/main/scripts/build-docs.sh | bash"
+  command = "python generate_tiles.py && curl -sSfL https://raw.githubusercontent.com/EarthScope/docs.earthscope.org/main/scripts/build-docs.sh | bash"
 
 [build.environment]
   NODE_VERSION = "24"
