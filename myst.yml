@@ -5,6 +5,15 @@ project:
   title: EarthScope Community Library
   copyright: '2024-2026'
   github: EarthScope/CommunityLibrary
+  plugins:
+    # Fills `{listing}` with `:source: geolab` from projects/*.yml.
+    - type: executable
+      path: library_listing.py
+    # myst-listing renders the project cards.
+    # Both are vendored in plugins/ (see plugins/README.md for versions).
+    - plugins/myst-listing.mjs
+    # searchfilter adds the live filter box above the cards.
+    - plugins/searchfilter.mjs
 
   toc:
     - file: welcome.md
