@@ -5,6 +5,12 @@ project:
   title: EarthScope Community Library
   copyright: '2024-2026'
   github: EarthScope/CommunityLibrary
+  plugins:
+    # {geolab-library} directive + the browser gallery widget.
+    - plugins/geolab-library.mjs
+    # Fills the gallery with projects/*.yml.
+    - type: executable
+      path: library_listing.py
 
   toc:
     - file: welcome.md

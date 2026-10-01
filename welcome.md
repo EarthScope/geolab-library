@@ -4,7 +4,7 @@ This is a page that explains what the library is
 
 ## Using the library
 
-Go the [Project Directory page](project_tiles.md) to browse projects. Click on tags or use the search bar to filter materials with related keywords. 
+Go the [Project Directory page](project_tiles.md) to browse projects. Use the search bar, or click a tag or author, to filter projects. 
 
 ## Contributing to the library
 
