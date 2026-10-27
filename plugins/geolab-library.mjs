@@ -14,8 +14,10 @@
 const PLUGIN_PATH = decodeURIComponent(new URL(import.meta.url).pathname);
 const PAGE_SIZE = 24;
 const TOP_TAGS = 12;
+// Project types appear in this order; any others follow, most common first.
+const TYPE_ORDER = ['notebook', 'image', 'other'];
 // URL query parameters that hold the filter state.
-const PARAMS = { q: 'q', tag: 'tag', author: 'author' };
+const PARAMS = { q: 'q', type: 'type', tag: 'tag', author: 'author' };
 
 // Relative POSIX path from directory `fromDir` to file `toFile`. MyST resolves
 // a widget's `esm` against the page's folder, so the directive needs this.
@@ -124,10 +126,17 @@ function countValues(items, field) {
   return [...counts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
 }
 
+/** Rank of a project type in TYPE_ORDER; unlisted types sort after. */
+const typeRank = (t) => {
+  const i = TYPE_ORDER.indexOf(t);
+  return i === -1 ? TYPE_ORDER.length : i;
+};
+
 function readState() {
   const params = new URL(window.location).searchParams;
   return {
     q: params.get(PARAMS.q) ?? '',
+    types: new Set(params.getAll(PARAMS.type)),
     tags: new Set(params.getAll(PARAMS.tag)),
     authors: new Set(params.getAll(PARAMS.author)),
   };
@@ -137,6 +146,7 @@ function writeState(state) {
   const url = new URL(window.location);
   for (const key of Object.values(PARAMS)) url.searchParams.delete(key);
   if (state.q) url.searchParams.set(PARAMS.q, state.q);
+  for (const t of state.types) url.searchParams.append(PARAMS.type, t);
   for (const t of state.tags) url.searchParams.append(PARAMS.tag, t);
   for (const a of state.authors) url.searchParams.append(PARAMS.author, a);
   history.replaceState(history.state, '', url);
@@ -145,9 +155,12 @@ function writeState(state) {
 function render({ model, el }) {
   const items = model.get('items') ?? [];
   const entries = indexItems(items);
+  // Stable sort keeps unlisted types in most-common-first order.
+  const typeCounts = countValues(items, 'types').sort((a, b) => typeRank(a[0]) - typeRank(b[0]));
   const tagCounts = countValues(items, 'tags');
   const state = readState();
   let shown = PAGE_SIZE;
+  let showAllTypes = false;
   let showAllTags = false;
 
   const root = h('div', { class: 'gl' });
@@ -191,6 +204,7 @@ function render({ model, el }) {
     const matches = [];
     for (const entry of entries) {
       const { item } = entry;
+      if (state.types.size && ![...state.types].every((t) => item.types?.includes(t))) continue;
       if (state.tags.size && ![...state.tags].every((t) => item.tags?.includes(t))) continue;
       if (state.authors.size && ![...state.authors].every((a) => item.authors?.includes(a))) continue;
       const s = terms.length ? score(entry, terms) : 1;
@@ -200,25 +214,36 @@ function render({ model, el }) {
     return matches.map((m) => m.item);
   }
 
-  function renderFacets() {
-    const tagRow = h('div', { class: 'gl-facet-row' }, h('span', { class: 'gl-facet-label' }, 'Tags'));
-    const visible = showAllTags ? tagCounts : tagCounts.slice(0, TOP_TAGS);
-    // Always show selected tags, even when they're not among the most common.
-    const visibleNames = new Set(visible.map(([t]) => t));
-    const extra = [...state.tags].filter((t) => !visibleNames.has(t)).map((t) => [t, undefined]);
-    for (const [tag, count] of [...extra, ...visible]) {
-      tagRow.append(chip(tag, state.tags.has(tag), () => toggle(state.tags, tag), count));
+  /** A row of chips for one field, most common values first, collapsed to TOP_TAGS. */
+  function facetRow(label, counts, selected, showAll, onShowAll) {
+    const row = h('div', { class: 'gl-facet-row' }, h('span', { class: 'gl-facet-label' }, label));
+    const visible = showAll ? counts : counts.slice(0, TOP_TAGS);
+    // Always show selected values, even when they're not among the most common.
+    const visibleNames = new Set(visible.map(([v]) => v));
+    const extra = [...selected].filter((v) => !visibleNames.has(v)).map((v) => [v, undefined]);
+    for (const [value, count] of [...extra, ...visible]) {
+      row.append(chip(value, selected.has(value), () => toggle(selected, value), count));
     }
-    if (tagCounts.length > TOP_TAGS) {
-      tagRow.append(
+    if (counts.length > TOP_TAGS) {
+      const noun = label.toLowerCase();
+      row.append(
         h('button', {
           class: 'gl-link',
           type: 'button',
-          onclick: () => { showAllTags = !showAllTags; renderFacets(); },
-        }, showAllTags ? 'Fewer tags' : `All ${tagCounts.length} tags`),
+          onclick: () => { onShowAll(!showAll); renderFacets(); },
+        }, showAll ? `Fewer ${noun}` : `All ${counts.length} ${noun}`),
       );
     }
-    facets.replaceChildren(tagRow);
+    return row;
+  }
+
+  function renderFacets() {
+    facets.replaceChildren(
+      ...(typeCounts.length
+        ? [facetRow('Project Type', typeCounts, state.types, showAllTypes, (v) => { showAllTypes = v; })]
+        : []),
+      facetRow('Tags', tagCounts, state.tags, showAllTags, (v) => { showAllTags = v; }),
+    );
     if (state.authors.size) {
       const authorRow = h('div', { class: 'gl-facet-row' }, h('span', { class: 'gl-facet-label' }, 'Authors'));
       for (const a of state.authors) authorRow.append(chip(a, true, () => toggle(state.authors, a)));
@@ -253,8 +278,10 @@ function render({ model, el }) {
             ]))
           : null,
         item.description ? h('p', { class: 'gl-desc' }, item.description) : null,
-        (item.tags ?? []).length
-          ? h('div', { class: 'gl-tags' }, item.tags.map((t) => chip(t, state.tags.has(t), () => toggle(state.tags, t))))
+        (item.types ?? []).length || (item.tags ?? []).length
+          ? h('div', { class: 'gl-tags' },
+              [...(item.types ?? [])].sort((a, b) => typeRank(a) - typeRank(b)).map((t) => chip(t, state.types.has(t), () => toggle(state.types, t))),
+              (item.tags ?? []).map((t) => chip(t, state.tags.has(t), () => toggle(state.tags, t))))
           : null,
         h(
           'div',
@@ -270,7 +297,7 @@ function render({ model, el }) {
     const matches = results();
     renderFacets();
     grid.replaceChildren(...matches.slice(0, shown).map(card));
-    const filtered = state.q || state.tags.size || state.authors.size;
+    const filtered = state.q || state.types.size || state.tags.size || state.authors.size;
     const count = filtered ? `${matches.length} of ${items.length} projects match` : `${items.length} projects`;
     status.textContent = matches.length
       ? (shown < matches.length ? `${count} · showing ${shown}` : count)

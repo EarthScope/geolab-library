@@ -16,7 +16,8 @@ Our library considers project submissions of the following types:
 
 Steps to submit a project:
 1. Create your project and put in a github repository. Test it in GeoLab and ensure it meets our [Contribution Guidelines](add link). 
-2. Make a copy of the template.yml file from this github repository. Rename it with your project name and fill in the metadata about your project. 
+2. Make a local copy of the template.yml file from this github repository. Rename it with your project name and fill in the metadata about your project.
+    - Include the URL to a thumbnail image (480x270 pixels) representing your project or institution. We recommend adding the image file to your github repository and linking to the [raw github file](https://docs.github.com/en/repositories/working-with-files/using-files/viewing-and-understanding-files). 
     - If submitting notebooks, create a [nbgitpuller link](https://docs.earthscope.org/geolab/advanced_topics/nbgitpuller.md) to your repository.
     - If submitting images, create a permalink to the GeoLab launch page with your image tag populated
 3. Make a pull request in our github repository to add your template.yml file to the /projects directory. An admin will review your project and pull request, and contact you if any questions, clarifications, or fixes need to be addressed. 

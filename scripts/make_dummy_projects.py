@@ -37,6 +37,7 @@ LAST = ["Garcia", "Chen", "Okafor", "Novak", "Silva", "Kim", "Haddad", "Larsen",
         "Moreau", "Patel", "Sato", "Kowalski", "Nguyen", "Adeyemi", "Rossi"]
 VERBS = ["explores", "walks through", "demonstrates", "compares", "visualizes",
          "benchmarks", "automates"]
+TYPES = ["notebook", "image", "other"]
 
 
 def dummy_project(i, rng):
@@ -44,6 +45,7 @@ def dummy_project(i, rng):
     tags = rng.sample(DOMAINS, rng.randint(1, 2)) + rng.sample(TECHNIQUES, rng.randint(1, 3))
     authors = [f"{rng.choice(FIRST)} {rng.choice(LAST)}" for _ in range(rng.randint(1, 4))]
     roll = rng.random()
+    type = rng.sample(TYPES, rng.randint(1,2))
     if roll < 0.7:
         thumbnail = f"https://picsum.photos/seed/geolab{i}/480/270"
     elif roll < 0.9:
@@ -61,6 +63,7 @@ def dummy_project(i, rng):
         ).strip(),
         "nbgitpuller": "https://geolab.earthscope.cloud/",
         "tags": tags,
+        "type": type
     }
     if thumbnail:
         project["thumbnail"] = thumbnail
