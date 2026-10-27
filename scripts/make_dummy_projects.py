@@ -38,6 +38,24 @@ LAST = ["Garcia", "Chen", "Okafor", "Novak", "Silva", "Kim", "Haddad", "Larsen",
 VERBS = ["explores", "walks through", "demonstrates", "compares", "visualizes",
          "benchmarks", "automates"]
 TYPES = ["notebook", "image", "other"]
+LOREM = [
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+    "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    "Curabitur pretium tincidunt lacus, nulla gravida orci a odio.",
+    "Nullam varius, turpis et commodo pharetra, est eros bibendum elit, nec luctus magna felis sollicitudin mauris.",
+    "Integer in mauris eu nibh euismod gravida.",
+    "Duis ac tellus et risus vulputate vehicula.",
+    "Donec lobortis risus a elit, etiam tempor ut ullamcorper ligula eu tempor congue.",
+    "Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat.",
+    "Aliquam erat volutpat, nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus.",
+]
+INSTITUTIONS = ["EarthScope Consortium", "University of Example", "Example Institute of Geophysics",
+                "Placeholder State University", "Sample Polytechnic"]
+IMAGES = ["geolab_default", "jupyter/scipy-notebook", "pangeo/pangeo-notebook"]
+RESOURCES = ["2GB", "4GB", "8GB", "16GB"]
 
 
 def dummy_project(i, rng):
@@ -56,18 +74,44 @@ def dummy_project(i, rng):
         "title": title,
         "author": authors,
         "github": f"https://github.com/example/project-{i:04d}",
-        "summary": (
-            f"This notebook {rng.choice(VERBS)} {tags[0]} data using "
-            f"{' and '.join(tags[1:]) or 'standard tools'}. "
-            + "Lorem ipsum dolor sit amet, consectetur adipiscing elit. " * rng.randint(0, 3)
-        ).strip(),
+        "summary": dummy_summary(tags, rng),
         "nbgitpuller": "https://geolab.earthscope.cloud/",
         "tags": tags,
         "type": type
     }
     if thumbnail:
         project["thumbnail"] = thumbnail
+    # Leave each detail field out now and then, so the pop-out's empty-field handling gets tested.
+    first, last = authors[0].lower().split()
+    if rng.random() < 0.9:
+        project["maintainer contact"] = f"{first}.{last}@example.org"
+    if rng.random() < 0.8:
+        project["author_institution"] = rng.choice(INSTITUTIONS)
+    if rng.random() < 0.8:
+        project["recommended_image"] = rng.choice(IMAGES)
+    if rng.random() < 0.8:
+        project["recommended_resource_allocation"] = rng.choice(RESOURCES)
+    if rng.random() < 0.85:
+        project["citation"] = dummy_citation(i, title, authors, rng)
     return project
+
+
+def dummy_summary(tags, rng):
+    """One plain sentence, then 0-3 paragraphs of Latin, so some summaries fit the card and some overflow it."""
+    intro = (f"This notebook {rng.choice(VERBS)} {tags[0]} data using "
+             f"{' and '.join(tags[1:]) or 'standard tools'}.")
+    paragraphs = [" ".join(rng.sample(LOREM, rng.randint(2, 6))) for _ in range(rng.choice([0, 1, 1, 2, 3]))]
+    if paragraphs:
+        paragraphs[0] = f"{intro} {paragraphs[0]}"
+        return "\n\n".join(paragraphs)
+    return intro
+
+
+def dummy_citation(i, title, authors, rng):
+    """APA-ish citation; DOI prefix 10.5555 is reserved for examples."""
+    names = [f"{a.split()[1]}, {a.split()[0][0]}." for a in authors]
+    names = names[0] if len(names) == 1 else ", ".join(names[:-1]) + f", & {names[-1]}"
+    return f"{names} ({rng.randint(2018, 2026)}). {title}. GeoLab Library. https://doi.org/10.5555/geolab.{i:04d}"
 
 
 def main():

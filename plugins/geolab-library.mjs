@@ -48,7 +48,7 @@ const STYLE = `
       color:inherit; cursor:pointer; }
 .gl-chip[aria-pressed="true"] { background:var(--gl-chip-on); color:var(--gl-chip-on-fg); }
 .gl-chip:focus-visible, .gl-more:focus-visible, .gl-search:focus-visible,
-.gl-title a:focus-visible { outline:2px solid var(--gl-chip-on); outline-offset:2px; }
+.gl-title button:focus-visible { outline:2px solid var(--gl-chip-on); outline-offset:2px; }
 .gl-count { font-size:0.8rem; color:var(--gl-muted); background:none; }
 .gl-link { font:inherit; font-size:0.8rem; background:none; border:none; padding:0;
       color:var(--gl-link); cursor:pointer; }
@@ -61,8 +61,9 @@ const STYLE = `
 .gl-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
 .gl-body { padding:0.75rem; display:flex; flex-direction:column; gap:0.4rem; flex:1; }
 .gl-title { margin:0; font-size:1rem; font-weight:600; line-height:1.3; }
-.gl-title a { color:inherit; text-decoration:none; }
-.gl-title a:hover { text-decoration:underline; }
+.gl-title button { font:inherit; color:inherit; text-align:left; background:none; border:none;
+      padding:0; cursor:pointer; }
+.gl-title button:hover { text-decoration:underline; }
 .gl-desc { margin:0; font-size:0.85rem; display:-webkit-box; -webkit-line-clamp:3;
       -webkit-box-orient:vertical; overflow:hidden; }
 .gl-authors { font-size:0.8rem; color:var(--gl-muted); }
@@ -74,6 +75,26 @@ const STYLE = `
       border:1px solid var(--gl-border); border-radius:6px; background:transparent;
       color:inherit; cursor:pointer; }
 .gl-more[hidden] { display:none; }
+.gl-card { cursor:pointer; }
+.gl-card:hover { border-color:var(--gl-muted); }
+.gl-dialog { width:min(40rem, calc(100vw - 2rem)); max-height:min(85vh, 50rem); padding:0;
+      border:1px solid var(--gl-border); border-radius:10px; background:var(--gl-card);
+      color:inherit; overflow:auto; }
+.gl-dialog::backdrop { background:rgb(0 0 0 / 0.45); }
+.gl-dialog .gl-thumb { aspect-ratio:21/9; }
+.gl-dialog-body { padding:1rem 1.25rem 1.25rem; display:flex; flex-direction:column; gap:0.6rem; }
+.gl-dialog-title { margin:0; padding-right:2rem; font-size:1.3rem; line-height:1.3; }
+.gl-dialog-summary { margin:0; white-space:pre-line; line-height:1.5; }
+.gl-close { position:absolute; top:0.5rem; right:0.5rem; z-index:1;
+      width:2rem; height:2rem; font:inherit; font-size:1.2rem; line-height:1; border-radius:999px;
+      border:1px solid var(--gl-border); background:var(--gl-card); color:inherit; cursor:pointer; }
+.gl-close:focus-visible, .gl-actions a:focus-visible, .gl-link:focus-visible { outline:2px solid var(--gl-chip-on); outline-offset:2px; }
+.gl-meta { margin:0.25rem 0 0; display:grid; grid-template-columns:max-content 1fr; gap:0.35rem 1rem;
+      font-size:0.85rem; }
+.gl-meta dt { font-weight:600; color:var(--gl-muted); }
+.gl-meta dd { margin:0; overflow-wrap:anywhere; }
+.gl-meta a { color:var(--gl-link); }
+@media (max-width:30rem) { .gl-meta { grid-template-columns:1fr; } .gl-meta dd { margin-bottom:0.35rem; } }
 `;
 
 function h(tag, props = {}, ...children) {
@@ -175,7 +196,10 @@ function render({ model, el }) {
   const status = h('div', { class: 'gl-status', role: 'status', 'aria-live': 'polite' });
   const grid = h('div', { class: 'gl-grid' });
   const more = h('button', { class: 'gl-more', type: 'button' });
-  root.append(h('style', {}, STYLE), search, facets, status, grid, more);
+  const dialog = h('dialog', { class: 'gl-dialog', 'aria-labelledby': 'gl-dialog-title' });
+  // A click on the backdrop lands on the <dialog> itself; close on it.
+  dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });
+  root.append(h('style', {}, STYLE), search, facets, status, grid, more, dialog);
   el.append(root);
 
   // Follow the site's light/dark theme (the theme toggles `dark` on <html>).
@@ -251,44 +275,95 @@ function render({ model, el }) {
     }
   }
 
-  function thumbnail(item) {
+  function thumbnail(item, loading = 'lazy') {
     const fallback = () => h('div', { class: 'gl-thumb', 'aria-hidden': 'true' }, String(item.title ?? '?').trim().charAt(0).toUpperCase());
     if (!item.thumbnail) return fallback();
-    const img = h('img', { src: item.thumbnail, alt: '', loading: 'lazy', decoding: 'async' });
+    const img = h('img', { src: item.thumbnail, alt: '', loading, decoding: 'async' });
     const box = h('div', { class: 'gl-thumb' }, img);
     img.addEventListener('error', () => box.replaceWith(fallback()), { once: true });
     return box;
   }
 
+  // Card and pop-out pieces. `then` runs before a filter toggles (the pop-out closes itself).
+  const external = (href) => ({ href, target: '_blank', rel: 'noopener' });
+
+  function authorLinks(item, then = () => {}) {
+    return (item.authors ?? []).flatMap((a, i) => [
+      i ? ', ' : null,
+      h('button', { class: 'gl-link', type: 'button', title: `Show projects by ${a}`, onclick: () => { then(); toggle(state.authors, a); } }, a),
+    ]);
+  }
+
+  function tagChips(item, then = () => {}) {
+    if (!(item.types ?? []).length && !(item.tags ?? []).length) return null;
+    return h('div', { class: 'gl-tags' },
+      [...(item.types ?? [])].sort((a, b) => typeRank(a) - typeRank(b)).map((t) => chip(t, state.types.has(t), () => { then(); toggle(state.types, t); })),
+      (item.tags ?? []).map((t) => chip(t, state.tags.has(t), () => { then(); toggle(state.tags, t); })));
+  }
+
+  function actions(item, ...extra) {
+    return h(
+      'div',
+      { class: 'gl-actions' },
+      item.url ? h('a', external(item.url), 'Open in GeoLab') : null,
+      item.github ? h('a', external(item.github), 'Source') : null,
+      ...extra,
+    );
+  }
+
+  /** An email address or URL as a link; anything else as plain text. */
+  function contactLink(value) {
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return h('a', { href: `mailto:${value}` }, value);
+    if (/^https?:\/\//.test(value)) return h('a', external(value), value);
+    return value;
+  }
+
+  function showDetails(item) {
+    const close = () => dialog.close();
+    const meta = [
+      ['Institution', item.institution],
+      ['Maintainer contact', item.contact && contactLink(item.contact)],
+      ['Recommended image', item.image],
+      ['Recommended resources', item.resources],
+      ['Citation', item.citation],
+    ].filter(([, value]) => value);
+    dialog.replaceChildren(
+      h('button', { class: 'gl-close', type: 'button', 'aria-label': 'Close', onclick: close }, '×'),
+      thumbnail(item, 'eager'),
+      h(
+        'div',
+        { class: 'gl-dialog-body' },
+        h('h2', { class: 'gl-dialog-title', id: 'gl-dialog-title' }, item.title),
+        (item.authors ?? []).length ? h('div', { class: 'gl-authors' }, authorLinks(item, close)) : null,
+        tagChips(item, close),
+        item.description ? h('p', { class: 'gl-dialog-summary' }, item.description) : null,
+        meta.length ? h('dl', { class: 'gl-meta' }, meta.flatMap(([label, value]) => [h('dt', {}, label), h('dd', {}, value)])) : null,
+        actions(item),
+      ),
+    );
+    dialog.showModal();
+    dialog.scrollTop = 0;
+  }
+
   function card(item) {
-    const link = item.url ? { href: item.url, target: '_blank', rel: 'noopener' } : {};
     const authors = item.authors ?? [];
     return h(
       'article',
-      { class: 'gl-card' },
+      {
+        class: 'gl-card',
+        // Clicks on the card's own links and buttons do their own thing.
+        onclick: (e) => { if (!e.target.closest('a, button')) showDetails(item); },
+      },
       thumbnail(item),
       h(
         'div',
         { class: 'gl-body' },
-        h('h3', { class: 'gl-title' }, item.url ? h('a', link, item.title) : item.title),
-        authors.length
-          ? h('div', { class: 'gl-authors' }, authors.flatMap((a, i) => [
-              i ? ', ' : null,
-              h('button', { class: 'gl-link', type: 'button', title: `Show projects by ${a}`, onclick: () => toggle(state.authors, a) }, a),
-            ]))
-          : null,
+        // A button, so the pop-out is also reachable by keyboard.
+        h('h3', { class: 'gl-title' }, h('button', { type: 'button', onclick: () => showDetails(item) }, item.title)),
+        authors.length ? h('div', { class: 'gl-authors' }, authorLinks(item)) : null,
         item.description ? h('p', { class: 'gl-desc' }, item.description) : null,
-        (item.types ?? []).length || (item.tags ?? []).length
-          ? h('div', { class: 'gl-tags' },
-              [...(item.types ?? [])].sort((a, b) => typeRank(a) - typeRank(b)).map((t) => chip(t, state.types.has(t), () => toggle(state.types, t))),
-              (item.tags ?? []).map((t) => chip(t, state.tags.has(t), () => toggle(state.tags, t))))
-          : null,
-        h(
-          'div',
-          { class: 'gl-actions' },
-          item.url ? h('a', link, 'Open in GeoLab') : null,
-          item.github ? h('a', { href: item.github, target: '_blank', rel: 'noopener' }, 'Source') : null,
-        ),
+        tagChips(item),
+        actions(item),
       ),
     );
   }

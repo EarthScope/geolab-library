@@ -32,6 +32,13 @@ def as_list(value):
     return value if isinstance(value, list) else [value]
 
 
+def text(value):
+    """A YAML scalar as stripped text, or None if empty."""
+    if value is None:
+        return None
+    return str(value).strip() or None
+
+
 def thumbnail_url(metadata):
     """An absolute thumbnail URL, or None.
 
@@ -65,6 +72,12 @@ def collect_project(path):
         "thumbnail": thumbnail_url(metadata),
         "url": metadata.get("nbgitpuller") or metadata.get("github"),
         "github": metadata.get("github"),
+        # Shown only in the card's detail pop-out.
+        "institution": text(metadata.get("author_institution")),
+        "contact": text(metadata.get("maintainer contact")),
+        "image": text(metadata.get("recommended_image")),
+        "resources": text(metadata.get("recommended_resource_allocation")),
+        "citation": text(metadata.get("citation")),
     }
     return {key: value for key, value in item.items() if value}
 
