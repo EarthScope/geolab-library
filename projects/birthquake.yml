@@ -1,13 +1,21 @@
 title: Birthquake
-author: [Sophia Parafina, Author A]
-github: https://github.com/EarthScope/GeoLab-learning-hub
+author: [Sophia Parafina, EarthScope Consortium]
+github: https://github.com/EarthScope/GeoLab-learning-hub/tree/main/birthquake
 author_institution: EarthScope Consortium
 maintainer contact: help@earthscope.org
-thumbnail: image.png
+thumbnail: https://github.com/EarthScope/GeoLab-learning-hub/blob/6c7365d9a02d7d216c2168fb4269b15f6998897f/birthquake/birthquake_thumb.png?raw=true 
 
 summary: This widget lets you enter any date (your birthday!) and displays a map showing the largest 3 earthquakes worldwide on that day.
-nbgitpuller: https://geolab.earthscope.cloud/
+description: >
+  Birthquake queries a global earthquake event service for a date you choose and plots the
+  three largest earthquakes that occurred that day on an interactive map. It's a lightweight,
+  no-code way to explore historical seismicity and see how event services can be wired up
+  to a simple interactive widget.
+nbgitpuller: https://geolab.earthscope.cloud/user/google-oauth2%7C117710759588624106233/tree/GeoLab-learning-hub/birthquake 
 tags: [event service, seismology, earthquakes]
-recommended_image: geolab_default
+type: [notebook]
+difficulty: beginner
+time_commitment: 5 minutes
+recommended_image: geolab_base
 recommended_resource_allocation: 4GB
-citation:  <text here>
+last_updated: 2026-10-29

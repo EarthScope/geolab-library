@@ -1,0 +1,24 @@
+title: GeoLab Geodetic Data Access Tutorials
+author: [Eshanta Mishra, EarthScope OnRamp Team]
+github: https://github.com/EarthScope/geolab-tutorials/tree/main/geodetic
+author_institution: EarthScope Consortium
+maintainer contact: help@earthscope.org
+thumbnail: https://github.com/EarthScope/geolab-tutorials/blob/main/geodetic/geodetic_data_thumb.png?raw=true 
+summary: These tutorials introduce users to core methods for accessing and processing geodetic data from the NSF National Geophysical Facility Data Archive
+description: >
+  The tutorials use authentic geodetic and computational tasks to build skills that can transfer
+  across datasets and research workflows. Rather than teaching users to reproduce a single
+  notebook or processing pipeline, the pathway progresses from accessing and exploring data to
+  executing, adapting, and eventually scaling scientific workflows.
+  The geodetic/ pathway focuses on accessing, exploring, and analyzing GNSS and other geodetic data and products in GeoLab.
+  These notebooks use the EarthScope SDK to work with GNSS observations, position streams, and satellite ephemerides directly in the cloud, rather than downloading and parsing raw data files (such as RINEX) locally. They emphasize data access and server-side filtering, quality inspection, visualization, and combining products for analysis.
+
+nbgitpuller: https://geolab.earthscope.cloud/
+tags: [data_access, earthscope_sdk, GNSS, geodesy]
+type: [notebook]
+difficulty: intermediate
+time_commitment: 90 minutes
+recommended_image: geolab_base
+recommended_resource_allocation: 4GB
+citation: <text here>
+last_updated: 2026-10-29

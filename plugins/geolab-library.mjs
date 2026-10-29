@@ -15,9 +15,11 @@ const PLUGIN_PATH = decodeURIComponent(new URL(import.meta.url).pathname);
 const PAGE_SIZE = 24;
 const TOP_TAGS = 12;
 // Project types appear in this order; any others follow, most common first.
-const TYPE_ORDER = ['notebook', 'image', 'other'];
+const TYPE_ORDER = ['notebook', 'image'];
+// Difficulty levels appear in this order; any others follow, most common first.
+const DIFFICULTY_ORDER = ['beginner', 'intermediate', 'advanced', 'expert'];
 // URL query parameters that hold the filter state.
-const PARAMS = { q: 'q', type: 'type', tag: 'tag', author: 'author' };
+const PARAMS = { q: 'q', type: 'type', tag: 'tag', author: 'author', difficulty: 'difficulty' };
 
 // Relative POSIX path from directory `fromDir` to file `toFile`. MyST resolves
 // a widget's `esm` against the page's folder, so the directive needs this.
@@ -68,6 +70,9 @@ const STYLE = `
       -webkit-box-orient:vertical; overflow:hidden; }
 .gl-authors { font-size:0.8rem; color:var(--gl-muted); }
 .gl-authors .gl-link { font-size:inherit; }
+.gl-badges { display:flex; flex-wrap:wrap; gap:0.35rem; }
+.gl-badge { font-size:0.75rem; line-height:1.4; padding:0.1rem 0.55rem; border-radius:999px;
+      background:var(--gl-chip); color:var(--gl-muted); }
 .gl-tags { display:flex; flex-wrap:wrap; gap:0.25rem; margin-top:auto; padding-top:0.25rem; }
 .gl-actions { display:flex; gap:0.75rem; font-size:0.8rem; padding-top:0.25rem; }
 .gl-actions a { color:var(--gl-link); }
@@ -140,10 +145,14 @@ function score(entry, terms) {
   return total;
 }
 
-/** Count how often each value of `field` occurs, most frequent first. */
+/** Count how often each value of `field` occurs, most frequent first. Handles both array and scalar fields. */
 function countValues(items, field) {
   const counts = new Map();
-  for (const item of items) for (const v of item[field] ?? []) counts.set(v, (counts.get(v) ?? 0) + 1);
+  for (const item of items) {
+    const v = item[field];
+    const values = Array.isArray(v) ? v : v ? [v] : [];
+    for (const value of values) counts.set(value, (counts.get(value) ?? 0) + 1);
+  }
   return [...counts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
 }
 
@@ -153,6 +162,12 @@ const typeRank = (t) => {
   return i === -1 ? TYPE_ORDER.length : i;
 };
 
+/** Rank of a difficulty in DIFFICULTY_ORDER; unlisted values sort after. */
+const difficultyRank = (d) => {
+  const i = DIFFICULTY_ORDER.indexOf(d);
+  return i === -1 ? DIFFICULTY_ORDER.length : i;
+};
+
 function readState() {
   const params = new URL(window.location).searchParams;
   return {
@@ -160,6 +175,7 @@ function readState() {
     types: new Set(params.getAll(PARAMS.type)),
     tags: new Set(params.getAll(PARAMS.tag)),
     authors: new Set(params.getAll(PARAMS.author)),
+    difficulties: new Set(params.getAll(PARAMS.difficulty)),
   };
 }
 
@@ -170,18 +186,21 @@ function writeState(state) {
   for (const t of state.types) url.searchParams.append(PARAMS.type, t);
   for (const t of state.tags) url.searchParams.append(PARAMS.tag, t);
   for (const a of state.authors) url.searchParams.append(PARAMS.author, a);
+  for (const d of state.difficulties) url.searchParams.append(PARAMS.difficulty, d);
   history.replaceState(history.state, '', url);
 }
 
 function render({ model, el }) {
   const items = model.get('items') ?? [];
   const entries = indexItems(items);
-  // Stable sort keeps unlisted types in most-common-first order.
+  // Stable sort keeps unlisted types/difficulties in most-common-first order.
   const typeCounts = countValues(items, 'types').sort((a, b) => typeRank(a[0]) - typeRank(b[0]));
   const tagCounts = countValues(items, 'tags');
+  const difficultyCounts = countValues(items, 'difficulty').sort((a, b) => difficultyRank(a[0]) - difficultyRank(b[0]));
   const state = readState();
   let shown = PAGE_SIZE;
   let showAllTypes = false;
+  let showAllDifficulties = false;
   let showAllTags = false;
 
   const root = h('div', { class: 'gl' });
@@ -231,6 +250,8 @@ function render({ model, el }) {
       if (state.types.size && ![...state.types].every((t) => item.types?.includes(t))) continue;
       if (state.tags.size && ![...state.tags].every((t) => item.tags?.includes(t))) continue;
       if (state.authors.size && ![...state.authors].every((a) => item.authors?.includes(a))) continue;
+      // Difficulty is a single value per project, so selecting several is an "either" match, not "all".
+      if (state.difficulties.size && !state.difficulties.has(item.difficulty)) continue;
       const s = terms.length ? score(entry, terms) : 1;
       if (s) matches.push({ item, s });
     }
@@ -263,6 +284,9 @@ function render({ model, el }) {
 
   function renderFacets() {
     facets.replaceChildren(
+      ...(difficultyCounts.length
+        ? [facetRow('Difficulty', difficultyCounts, state.difficulties, showAllDifficulties, (v) => { showAllDifficulties = v; })]
+        : []),
       ...(typeCounts.length
         ? [facetRow('Project Type', typeCounts, state.types, showAllTypes, (v) => { showAllTypes = v; })]
         : []),
@@ -294,11 +318,23 @@ function render({ model, el }) {
     ]);
   }
 
+  /** Clickable type chips (notebook, image, …), sorted like the type facet. */
+  function typeChips(item, then = () => {}) {
+    const types = [...(item.types ?? [])].sort((a, b) => typeRank(a) - typeRank(b));
+    return types.length ? types.map((t) => chip(t, state.types.has(t), () => { then(); toggle(state.types, t); })) : null;
+  }
+
+  /** Top-of-card row: project type chips alongside difficulty/time-commitment pills. */
+  function badges(item, then = () => {}) {
+    const types = typeChips(item, then);
+    const parts = [item.difficulty, item.time_commitment].filter(Boolean);
+    if (!types && !parts.length) return null;
+    return h('div', { class: 'gl-badges' }, types, parts.map((p) => h('span', { class: 'gl-badge' }, p)));
+  }
+
   function tagChips(item, then = () => {}) {
-    if (!(item.types ?? []).length && !(item.tags ?? []).length) return null;
-    return h('div', { class: 'gl-tags' },
-      [...(item.types ?? [])].sort((a, b) => typeRank(a) - typeRank(b)).map((t) => chip(t, state.types.has(t), () => { then(); toggle(state.types, t); })),
-      (item.tags ?? []).map((t) => chip(t, state.tags.has(t), () => { then(); toggle(state.tags, t); })));
+    if (!(item.tags ?? []).length) return null;
+    return h('div', { class: 'gl-tags' }, item.tags.map((t) => chip(t, state.tags.has(t), () => { then(); toggle(state.tags, t); })));
   }
 
   function actions(item, ...extra) {
@@ -326,6 +362,7 @@ function render({ model, el }) {
       ['Recommended image', item.image],
       ['Recommended resources', item.resources],
       ['Citation', item.citation],
+      ['Last updated', item.last_updated],
     ].filter(([, value]) => value);
     dialog.replaceChildren(
       h('button', { class: 'gl-close', type: 'button', 'aria-label': 'Close', onclick: close }, '×'),
@@ -335,8 +372,10 @@ function render({ model, el }) {
         { class: 'gl-dialog-body' },
         h('h2', { class: 'gl-dialog-title', id: 'gl-dialog-title' }, item.title),
         (item.authors ?? []).length ? h('div', { class: 'gl-authors' }, authorLinks(item, close)) : null,
+        badges(item, close),
         tagChips(item, close),
         item.description ? h('p', { class: 'gl-dialog-summary' }, item.description) : null,
+        item.long_description ? h('p', { class: 'gl-dialog-summary' }, item.long_description) : null,
         meta.length ? h('dl', { class: 'gl-meta' }, meta.flatMap(([label, value]) => [h('dt', {}, label), h('dd', {}, value)])) : null,
         actions(item),
       ),
@@ -361,6 +400,7 @@ function render({ model, el }) {
         // A button, so the pop-out is also reachable by keyboard.
         h('h3', { class: 'gl-title' }, h('button', { type: 'button', onclick: () => showDetails(item) }, item.title)),
         authors.length ? h('div', { class: 'gl-authors' }, authorLinks(item)) : null,
+        badges(item),
         item.description ? h('p', { class: 'gl-desc' }, item.description) : null,
         tagChips(item),
         actions(item),
@@ -372,7 +412,7 @@ function render({ model, el }) {
     const matches = results();
     renderFacets();
     grid.replaceChildren(...matches.slice(0, shown).map(card));
-    const filtered = state.q || state.types.size || state.tags.size || state.authors.size;
+    const filtered = state.q || state.types.size || state.tags.size || state.authors.size || state.difficulties.size;
     const count = filtered ? `${matches.length} of ${items.length} projects match` : `${items.length} projects`;
     status.textContent = matches.length
       ? (shown < matches.length ? `${count} · showing ${shown}` : count)
