@@ -56,6 +56,8 @@ INSTITUTIONS = ["EarthScope Consortium", "University of Example", "Example Insti
                 "Placeholder State University", "Sample Polytechnic"]
 IMAGES = ["geolab_default", "jupyter/scipy-notebook", "pangeo/pangeo-notebook"]
 RESOURCES = ["2GB", "4GB", "8GB", "16GB"]
+DIFFICULTIES = ["beginner", "intermediate", "advanced", "expert"]
+TIME_COMMITMENTS = ["5 minutes", "15 minutes", "30 minutes", "1 hour", "2 hours", "half a day"]
 
 
 def dummy_project(i, rng):
@@ -93,6 +95,10 @@ def dummy_project(i, rng):
         project["recommended_resource_allocation"] = rng.choice(RESOURCES)
     if rng.random() < 0.85:
         project["citation"] = dummy_citation(i, title, authors, rng)
+    if rng.random() < 0.8:
+        project["difficulty"] = rng.choice(DIFFICULTIES)
+    if rng.random() < 0.8:
+        project["time_commitment"] = rng.choice(TIME_COMMITMENTS)
     return project
 
 

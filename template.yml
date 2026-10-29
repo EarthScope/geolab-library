@@ -5,11 +5,16 @@ author_institution: Your Institution
 maintainer contact: your-email@example.com
 thumbnail: thumbnail.url
 summary: >
-  A brief description of what your project does. More detail should be
-  included in a README or notebook in the repo.
+  A very brief (2-sentence) overview of what your project does. More detail should be
+  included in the description.
+description: >
+  A longer descritiption (1-4 paragraphs) of the goals, methods, and of your project  
 nbgitpuller: https://geolab.earthscope.cloud/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2FYourOrg%2FYourRepo&urlpath=tree%2FYourRepo%2Fyour-notebook.ipynb&branch=main
 tags: [tag1, tag2, tag3]
 type: [notebook, image, other]
-recommended_image: jupyter/scipy-notebook
+difficulty: [beginner, intermediate, advanced, expert]
+time_commitment: [x minutes]
+recommended_image: geolab_base
 recommended_resource_allocation: "4GB"
 citation: "Author (Year). Title. DOI or URL."
+last_updated: YYYY-MM-DD

@@ -72,12 +72,15 @@ def collect_project(path):
         "thumbnail": thumbnail_url(metadata),
         "url": metadata.get("nbgitpuller") or metadata.get("github"),
         "github": metadata.get("github"),
+        "difficulty": text(metadata.get("difficulty")),
+        "time_commitment": text(metadata.get("time_commitment")),
         # Shown only in the card's detail pop-out.
         "institution": text(metadata.get("author_institution")),
         "contact": text(metadata.get("maintainer contact")),
         "image": text(metadata.get("recommended_image")),
         "resources": text(metadata.get("recommended_resource_allocation")),
         "citation": text(metadata.get("citation")),
+        "last_updated": text(metadata.get("last_updated")),
     }
     return {key: value for key, value in item.items() if value}
 
