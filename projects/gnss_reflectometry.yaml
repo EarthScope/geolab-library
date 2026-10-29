@@ -3,7 +3,7 @@ author: [Eshanta Mishra, Alex Hamilton, Henry Berglund]
 github: https://github.com/EarthScope/GeoLab-learning-hub
 author_institution: EarthScope Consortium
 maintainer contact: help@earthscope.org
-
+thumbnail: https://github.com/EarthScope/GeoLab-learning-hub/blob/main/reflectometry/reflectometry_thumb.png?raw=true 
 summary: This notebook provides an introduction to GNSS Interferometric Reflectometry using data from the NGF archive.
 description: >
   This notebook introduces GNSS interferometric reflectometry (GNSS-IR), a technique that
@@ -12,7 +12,7 @@ description: >
   GNSS data from the NGF archive and computing a basic reflectometry estimate.
 nbgitpuller: https://geolab.earthscope.cloud/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2FEarthScope%2FGeoLab-learning-hub&urlpath=tree%2FGeoLab-learning-hub%2Freflectometry%2Fgnss-interferometric-reflectometry.ipynb&branch=main
 
-tags: [GNSS, reflectometry, earthscope_sdk]
+tags: [GNSS, reflectometry, geodesy, earthscope_sdk]
 type: [notebook]
 difficulty: intermediate
 time_commitment: 45 minutes

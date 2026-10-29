@@ -1,6 +1,6 @@
 title: Birthquake
 author: [Sophia Parafina, EarthScope Consortium]
-github: https://github.com/EarthScope/GeoLab-learning-hub
+github: https://github.com/EarthScope/GeoLab-learning-hub/tree/main/birthquake
 author_institution: EarthScope Consortium
 maintainer contact: help@earthscope.org
 thumbnail: https://github.com/EarthScope/GeoLab-learning-hub/blob/6c7365d9a02d7d216c2168fb4269b15f6998897f/birthquake/birthquake_thumb.png?raw=true 
@@ -11,7 +11,7 @@ description: >
   three largest earthquakes that occurred that day on an interactive map. It's a lightweight,
   no-code way to explore historical seismicity and see how event services can be wired up
   to a simple interactive widget.
-nbgitpuller: https://geolab.earthscope.cloud/
+nbgitpuller: https://geolab.earthscope.cloud/user/google-oauth2%7C117710759588624106233/tree/GeoLab-learning-hub/birthquake 
 tags: [event service, seismology, earthquakes]
 type: [notebook]
 difficulty: beginner

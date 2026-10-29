@@ -3,7 +3,7 @@ author: [Asif Ashraf, Sophia Parafina]
 github: https://github.com/EarthScope/geolab-tutorials/tree/main/advanced_compute/dask
 author_institution: EarthScope Consortium
 maintainer contact: help@earthscope.org
-thumbnail: thumbnail.url
+thumbnail: https://github.com/EarthScope/geolab-tutorials/blob/main/advanced_compute/dask/dask_thumb.png?raw=true 
 summary: >
   This series of notebooks introduces dask, a powerful python tool for orchestrating parallelized workflows.
 description: >

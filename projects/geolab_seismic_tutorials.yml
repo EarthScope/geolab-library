@@ -1,9 +1,9 @@
 title: GeoLab Seismic Data Access Tutorials
 author: [Asif Ashraf, EarthScope OnRamp Team]
-github: https://github.com/EarthScope/GeoLab-learning-hub
+github: https://github.com/EarthScope/geolab-tutorials/tree/main/seismic
 author_institution: EarthScope Consortium
 maintainer contact: help@earthscope.org
-thumbnail: https://github.com/EarthScope/geolab-tutorials/blob/main/seismic/seismic_data_thumb.png?raw=true 
+thumbnail: https://github.com/EarthScope/geolab-tutorials/blob/main/seismic/seismic_data_thumb.png?raw=true
 
 summary: These tutorials introduce users to core methods for accessing and processing seismic data from the NSF National Geophysical Facility Data Archive
 description: >

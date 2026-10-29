@@ -1,9 +1,9 @@
 title: GeoLab Geodetic Data Access Tutorials
 author: [Eshanta Mishra, EarthScope OnRamp Team]
-github: https://github.com/EarthScope/GeoLab-learning-hub
+github: https://github.com/EarthScope/geolab-tutorials/tree/main/geodetic
 author_institution: EarthScope Consortium
 maintainer contact: help@earthscope.org
-
+thumbnail: https://github.com/EarthScope/geolab-tutorials/blob/main/geodetic/geodetic_data_thumb.png?raw=true 
 summary: These tutorials introduce users to core methods for accessing and processing geodetic data from the NSF National Geophysical Facility Data Archive
 description: >
   The tutorials use authentic geodetic and computational tasks to build skills that can transfer
