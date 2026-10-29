@@ -66,6 +66,7 @@ def collect_project(path):
     item = {
         "title": metadata.get("title") or path.stem,
         "description": metadata.get("summary"),
+        "long_description": text(metadata.get("description")),
         "authors": [str(a) for a in as_list(metadata.get("author"))],
         "tags": [str(t) for t in as_list(metadata.get("tags"))],
         "types": [str(t) for t in as_list(metadata.get("type"))],

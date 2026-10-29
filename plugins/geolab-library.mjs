@@ -375,6 +375,7 @@ function render({ model, el }) {
         badges(item, close),
         tagChips(item, close),
         item.description ? h('p', { class: 'gl-dialog-summary' }, item.description) : null,
+        item.long_description ? h('p', { class: 'gl-dialog-summary' }, item.long_description) : null,
         meta.length ? h('dl', { class: 'gl-meta' }, meta.flatMap(([label, value]) => [h('dt', {}, label), h('dd', {}, value)])) : null,
         actions(item),
       ),
