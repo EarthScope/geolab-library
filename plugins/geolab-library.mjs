@@ -15,7 +15,7 @@ const PLUGIN_PATH = decodeURIComponent(new URL(import.meta.url).pathname);
 const PAGE_SIZE = 24;
 const TOP_TAGS = 12;
 // Project types appear in this order; any others follow, most common first.
-const TYPE_ORDER = ['notebook', 'image', 'other'];
+const TYPE_ORDER = ['notebook', 'image'];
 // Difficulty levels appear in this order; any others follow, most common first.
 const DIFFICULTY_ORDER = ['beginner', 'intermediate', 'advanced', 'expert'];
 // URL query parameters that hold the filter state.
@@ -318,17 +318,23 @@ function render({ model, el }) {
     ]);
   }
 
-  /** Small at-a-glance pills for difficulty and time commitment. */
-  function badges(item) {
+  /** Clickable type chips (notebook, image, …), sorted like the type facet. */
+  function typeChips(item, then = () => {}) {
+    const types = [...(item.types ?? [])].sort((a, b) => typeRank(a) - typeRank(b));
+    return types.length ? types.map((t) => chip(t, state.types.has(t), () => { then(); toggle(state.types, t); })) : null;
+  }
+
+  /** Top-of-card row: project type chips alongside difficulty/time-commitment pills. */
+  function badges(item, then = () => {}) {
+    const types = typeChips(item, then);
     const parts = [item.difficulty, item.time_commitment].filter(Boolean);
-    return parts.length ? h('div', { class: 'gl-badges' }, parts.map((p) => h('span', { class: 'gl-badge' }, p))) : null;
+    if (!types && !parts.length) return null;
+    return h('div', { class: 'gl-badges' }, types, parts.map((p) => h('span', { class: 'gl-badge' }, p)));
   }
 
   function tagChips(item, then = () => {}) {
-    if (!(item.types ?? []).length && !(item.tags ?? []).length) return null;
-    return h('div', { class: 'gl-tags' },
-      [...(item.types ?? [])].sort((a, b) => typeRank(a) - typeRank(b)).map((t) => chip(t, state.types.has(t), () => { then(); toggle(state.types, t); })),
-      (item.tags ?? []).map((t) => chip(t, state.tags.has(t), () => { then(); toggle(state.tags, t); })));
+    if (!(item.tags ?? []).length) return null;
+    return h('div', { class: 'gl-tags' }, item.tags.map((t) => chip(t, state.tags.has(t), () => { then(); toggle(state.tags, t); })));
   }
 
   function actions(item, ...extra) {
@@ -366,7 +372,7 @@ function render({ model, el }) {
         { class: 'gl-dialog-body' },
         h('h2', { class: 'gl-dialog-title', id: 'gl-dialog-title' }, item.title),
         (item.authors ?? []).length ? h('div', { class: 'gl-authors' }, authorLinks(item, close)) : null,
-        badges(item),
+        badges(item, close),
         tagChips(item, close),
         item.description ? h('p', { class: 'gl-dialog-summary' }, item.description) : null,
         meta.length ? h('dl', { class: 'gl-meta' }, meta.flatMap(([label, value]) => [h('dt', {}, label), h('dd', {}, value)])) : null,

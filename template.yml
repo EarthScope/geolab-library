@@ -11,7 +11,7 @@ description: >
   A longer descritiption (1-4 paragraphs) of the goals, methods, and of your project  
 nbgitpuller: https://geolab.earthscope.cloud/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2FYourOrg%2FYourRepo&urlpath=tree%2FYourRepo%2Fyour-notebook.ipynb&branch=main
 tags: [tag1, tag2, tag3]
-type: [notebook, image, other]
+type: [notebook, image]
 difficulty: [beginner, intermediate, advanced, expert]
 time_commitment: [x minutes]
 recommended_image: geolab_base

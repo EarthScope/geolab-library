@@ -37,7 +37,7 @@ LAST = ["Garcia", "Chen", "Okafor", "Novak", "Silva", "Kim", "Haddad", "Larsen",
         "Moreau", "Patel", "Sato", "Kowalski", "Nguyen", "Adeyemi", "Rossi"]
 VERBS = ["explores", "walks through", "demonstrates", "compares", "visualizes",
          "benchmarks", "automates"]
-TYPES = ["notebook", "image", "other"]
+TYPES = ["notebook", "image"]
 LOREM = [
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
     "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
