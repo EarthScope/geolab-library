@@ -1,0 +1,27 @@
+title: GeoLab Seismic Data Access Tutorials
+author: [Asif Ashraf, EarthScope OnRamp Team]
+github: https://github.com/EarthScope/GeoLab-learning-hub
+author_institution: EarthScope Consortium
+maintainer contact: help@earthscope.org
+thumbnail: https://github.com/EarthScope/geolab-tutorials/blob/main/seismic/seismic_data_thumb.png?raw=true 
+
+summary: These tutorials introduce users to core methods for accessing and processing seismic data from the NSF National Geophysical Facility Data Archive
+description: >
+  The tutorials use authentic seismic and computational tasks to build skills that can transfer
+  across datasets and research workflows. Rather than teaching users to reproduce a single
+  notebook or processing pipeline, the pathway progresses from accessing and exploring data to
+  executing, adapting, and eventually scaling scientific workflows.
+
+
+  Because seismic workflows can operate directly on waveform data in notebook-based
+  environments, these notebooks emphasize data discovery and retrieval, data inspection and
+  preparation, visualization, workflow execution, and analysis.
+
+nbgitpuller: https://geolab.earthscope.cloud/
+tags: [data_access, obspy, seismology, miniseed]
+type: [notebook]
+difficulty: intermediate
+time_commitment: 90 minutes
+recommended_image: geolab_base
+recommended_resource_allocation: 4GB
+last_updated: 2026-10-29

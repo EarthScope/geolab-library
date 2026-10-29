@@ -1,0 +1,19 @@
+title: Using Dask in GeoLab
+author: [Asif Ashraf, Sophia Parafina]
+github: https://github.com/EarthScope/geolab-tutorials/tree/main/advanced_compute/dask
+author_institution: EarthScope Consortium
+maintainer contact: help@earthscope.org
+thumbnail: thumbnail.url
+summary: >
+  This series of notebooks introduces dask, a powerful python tool for orchestrating parallelized workflows.
+description: >
+  Note: In order to run dask on an external gateway as demonstrated in Notebook 3, additional permissions must be granted. See https://docs.earthscope.org/geolab/advanced-topics/dask for more details. 
+nbgitpuller: https://geolab.earthscope.cloud/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2FEarthScope%2FGeoLab-tutorials&urlpath=lab%2Ftree%2FGeoLab-tutorials%2F%2Fadvanced_compute%2Fdask%2F01_dask_operation.ipynb&branch=main
+tags: [dask, parallelization]
+type: [notebook]
+difficulty: advanced
+time_commitment: 2 hours
+recommended_image: geolab_base
+recommended_resource_allocation: "4GB"
+citation: "Author (Year). Title. DOI or URL."
+last_updated: 2026-10-29

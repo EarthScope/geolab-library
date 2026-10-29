@@ -1,9 +1,0 @@
-title: Example
-author: [Author 1, Author 2, Author 3]
-github: https://github.com/EarthScope/GeoLab-learning-hub
-maintainer contact: help@earthscope.org
-
-summary: This is a brief summary of the project. More detail should be included in the Notebook or a ReadMe file in the repo. 
-nbgitpuller: https://geolab.earthscope.cloud/
-tags: [cross-correlation, seismology, domain, technique]
-  
