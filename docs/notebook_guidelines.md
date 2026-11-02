@@ -12,7 +12,6 @@ If you wish to contribute Notebooks to the GeoLab Community Library, we ask that
 1. The code contains sufficient comments and expository text in markdown cells for a user unfamiliar with the workflow to be able to follow. 
 
 
-
-
-
-[placeholder for requirements and guidelines for notebooks]
+## Maintenance
+1. Your notebook must specify a maintainer and contact info. EarthScope is not responsible for keeping code up to date or fixing bugs identified by the community. 
+2. Projects will be reviewed by EarthScope staff on an annual basis. Projects which no longer run properly (due to package deprecations, etc) will be flagged. Maintainers will be contacted and if the issues are not resolved, the project will be archived. 
