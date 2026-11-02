@@ -1,25 +1,23 @@
-# Welcome to the GeoLab Library
+# Welcome to the GeoLab Community Library
 
-This is a page that explains what the library is
+The GeoLab Library is a community resource designed to make it easier to find and share scientific computing resources within the Geophysics Research Community.
+
+Leveraging the community's domain expertise and an author-ownership model, the NSF National Geophysical Facility seeks to bring researchers and students together to learn and pick up where others left off - instead of rewriting code someone else has perfected every time you need to run a new analysis. 
 
 ## Using the library
 
 Go the [Project Directory page](project_tiles.md) to browse projects. Use the search bar, or click a tag or author, to filter projects. 
 
-## Contributing to the library
+The library contains two kinds of resources:
+1. Python Notebooks: these are designed to launch in GeoLab with a single click -- no manual cloning or software setup required. 
+2. Container Images: pre-configured environments to run domain-specific software installations
 
-The Community Library relies on contributions from researchers like you! 
-If you've built something cool in GeoLab, we ask you to share it with the Geophysical Community.
-Our library considers project submissions of the following types:
-1. Notebooks: .ipynb files that run through a particular scientific workflow or analysis technique
-2. Images: Installations of domain-specific software, packages, or key tools in a custom geolab image[link] 
+## Contributing to the Library
 
-Steps to submit a project:
-1. Create your project and put in a github repository. Test it in GeoLab and ensure it meets our [Contribution Guidelines](add link). 
-2. Make a local copy of the template.yml file from this github repository. Rename it with your project name and fill in the metadata about your project.
-    - Include the URL to a thumbnail image (480x270 pixels) representing your project or institution. We recommend adding the image file to your github repository and linking to the [raw github file](https://docs.github.com/en/repositories/working-with-files/using-files/viewing-and-understanding-files). 
-    - If submitting notebooks, create a [nbgitpuller link](https://docs.earthscope.org/geolab/advanced_topics/nbgitpuller.md) to your repository.
-    - If submitting images, create a permalink to the GeoLab launch page with your image tag populated
-3. Make a pull request in our github repository to add your template.yml file to the /projects directory. An admin will review your project and pull request, and contact you if any questions, clarifications, or fixes need to be addressed. 
-4. That's it! Once your PR is merged, your project will be available on the Project Listing page for other community users. 
-5. Make a post on our [community forum](https://earthscope.discourse.group/) to share your work! 
+The success and utility of the library depends on researchers like you to share your work with the community! 
+
+If you've written a notebook to support a publication, to teach a course or workshop, or just to tinker with data, this is the best place to share it.
+
+All contributions to the Library remain the property of the authors and the source code continues to live in your own git repository. EarthScope collects metadata about your project and uses that to help surface it in this centralized Library platform where it's more searchable and seen by scientists who actually want to use it. 
+
+See [Contributing to the Library](./contributing.md) for more details on how to share your project.

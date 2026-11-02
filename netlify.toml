@@ -4,4 +4,4 @@
 
 [build.environment]
   NODE_VERSION = "24"
-  BASE_URL = "/library"
+  BASE_URL = "/geolab/library"

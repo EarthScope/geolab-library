@@ -13,5 +13,12 @@ project:
       path: library_listing.py
 
   toc:
-    - file: welcome.md
+    - file: docs/welcome.md
     - file: project_tiles.md
+    - file: docs/contributing.md
+      title: Contributing to the Library
+      children:
+        - file: docs/notebook_guidelines.md
+        - file: docs/image_guidelines.md
+  
+
