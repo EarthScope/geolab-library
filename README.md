@@ -1,16 +1,16 @@
 # GeoLab Library
 
 Source for the EarthScope Community Library at
-[docs.earthscope.org/library](https://docs.earthscope.org/library): a
+[docs.earthscope.org/geolab/library](https://docs.earthscope.org/geolab/library): a
 searchable gallery of notebooks and images that run in GeoLab.
 
-Each project is one YAML file in [`projects/`](projects/). The site is built
+Each project listing is one YAML file of metadata in [`projects/`](projects/). The site is built
 with [MyST](https://mystmd.org) and deployed by Netlify.
 
 ## Add a project
 
 Copy [`template.yml`](template.yml) into `projects/`, fill it in, and open a
-pull request. See [`welcome.md`](welcome.md) for contributor instructions.
+pull request. See https://docs.earthscope.org/geolab/library/contributing for contributor instructions.
 
 | Field | Used for |
 |-------|----------|
@@ -22,8 +22,7 @@ pull request. See [`welcome.md`](welcome.md) for contributor instructions.
 | `nbgitpuller` | Where the card and "Open in GeoLab" link to |
 | `github` | "Source" link, and base for a relative `thumbnail` |
 
-The remaining template fields (`recommended_image`, `citation`, …) are not
-shown on the card yet.
+The remaining template fields (`recommended_image`, `citation`, …) are customizable and appear in the long-form description pop-out.
 
 ## Run locally
 
@@ -119,22 +118,3 @@ gzipped) for 1000 projects. That's fine up to several thousand. Beyond that,
 move the list into a separate JSON file the widget fetches. MyST only copies
 a widget's `esm` and `css` files into the site, so that would need its own
 build step.
-
-## History
-
-1. **`generate_tiles.py`** (up to `4d79449`). A pre-build script wrote
-   `project_tiles.md` as raw HTML cards. It relied on a `tiles.js` injected
-   by patching the theme's `server.js` for search and tag clicks. That never
-   worked: the file didn't exist, and the static Netlify build doesn't use
-   `server.js`. MyST also strips inputs and event handlers from raw HTML.
-2. **myst-listing + searchfilter** (`ef5af25`). The same approach as the
-   [Pythia cookbook gallery](https://github.com/ProjectPythia/cookbook-gallery):
-   `library_listing.py` fed the
-   [myst-listing](https://github.com/myst-contrib/myst-listing) gallery, and
-   [searchfilter](https://github.com/jupyter-book/myst-plugins/tree/main/plugins/searchfilter)
-   filtered it. Search worked, but every card was rendered up front, with
-   no paging, no lazy images and no tag filters. We also vendored both
-   plugins, which have no declared license.
-3. **Custom widget** (current). Replaces both plugins with
-   `plugins/geolab-library.mjs`, built to handle thousands of projects.
-   Tested with 1000 dummy projects.

@@ -13,7 +13,7 @@ description: >
   The geodetic/ pathway focuses on accessing, exploring, and analyzing GNSS and other geodetic data and products in GeoLab.
   These notebooks use the EarthScope SDK to work with GNSS observations, position streams, and satellite ephemerides directly in the cloud, rather than downloading and parsing raw data files (such as RINEX) locally. They emphasize data access and server-side filtering, quality inspection, visualization, and combining products for analysis.
 
-nbgitpuller: https://geolab.earthscope.cloud/
+nbgitpuller: https://geolab.earthscope.cloud/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2FEarthScope%2Fgeolab-tutorials&urlpath=lab%2Ftree%2Fgeolab-tutorials%2Fgeodetic%2F01-access-gnss-via-SDK.ipynb&branch=main
 tags: [data_access, earthscope_sdk, GNSS, geodesy]
 type: [notebook]
 difficulty: intermediate

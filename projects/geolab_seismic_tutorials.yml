@@ -17,7 +17,7 @@ description: >
   environments, these notebooks emphasize data discovery and retrieval, data inspection and
   preparation, visualization, workflow execution, and analysis.
 
-nbgitpuller: https://geolab.earthscope.cloud/
+nbgitpuller: https://geolab.earthscope.cloud/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2FEarthScope%2Fgeolab-tutorials&urlpath=lab%2Ftree%2Fgeolab-tutorials%2Fseismic%2F01-discover-retrieve-seismic-data.ipynb&branch=main
 tags: [data_access, obspy, seismology, miniseed]
 type: [notebook]
 difficulty: intermediate

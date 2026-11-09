@@ -1,5 +1,5 @@
 title: Your Project Title
-author: [Author Name, Co-Author Name]
+author: [Author Name, Co-Author 1 Name, Co-Author 2 Name] 
 github: https://github.com/YourOrg/YourRepo
 author_institution: Your Institution
 maintainer contact: your-email@example.com
@@ -8,13 +8,13 @@ summary: >
   A very brief (2-sentence) overview of what your project does. More detail should be
   included in the description.
 description: >
-  A longer descritiption (1-4 paragraphs) of the goals, methods, and of your project  
+  A longer descritiption (1-4 paragraphs) of the goals, methods, and outcomes of your project  
 nbgitpuller: https://geolab.earthscope.cloud/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2FYourOrg%2FYourRepo&urlpath=tree%2FYourRepo%2Fyour-notebook.ipynb&branch=main
-tags: [tag1, tag2, tag3]
-type: [notebook, image]
-difficulty: [beginner, intermediate, advanced, expert]
-time_commitment: [x minutes]
-recommended_image: geolab_base
+tags: [tag_1, tag_2, tag_N]
+type: 'notebook' or 'container image' or both formatted as a list in square brackets
+difficulty: beginner, intermediate, advanced, or expert
+time_commitment: x minutes or hours
+image_tag: geolab_base *[If your dockerhub.io/my_image_tag *[only include for custom GeoLab images]
 recommended_resource_allocation: "4GB"
-citation: "Author (Year). Title. DOI or URL."
-last_updated: YYYY-MM-DD
+citation: DOI, Publication URL, or exact text you want someone to use to cite your code.
+last_updated: YYYY-MM-DD *[Date your project was last tested and verified working in GeoLab]
