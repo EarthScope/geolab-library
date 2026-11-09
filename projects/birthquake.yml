@@ -11,7 +11,7 @@ description: >
   three largest earthquakes that occurred that day on an interactive map. It's a lightweight,
   no-code way to explore historical seismicity and see how event services can be wired up
   to a simple interactive widget.
-nbgitpuller: https://geolab.earthscope.cloud/user/google-oauth2%7C117710759588624106233/tree/GeoLab-learning-hub/birthquake 
+nbgitpuller: https://geolab.earthscope.cloud/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2FEarthScope%2FGeoLab-learning-hub&urlpath=lab%2Ftree%2FGeoLab-learning-hub%2Fbirthquake%2Fbirthquake.ipynb&branch=main
 tags: [event service, seismology, earthquakes]
 type: [notebook]
 difficulty: beginner

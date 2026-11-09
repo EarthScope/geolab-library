@@ -10,8 +10,7 @@ description: >
   repurposes signal-to-noise ratio data from standard GNSS receivers to sense nearby surface
   properties such as snow depth, soil moisture, and water levels. It walks through pulling
   GNSS data from the NGF archive and computing a basic reflectometry estimate.
-nbgitpuller: https://geolab.earthscope.cloud/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2FEarthScope%2FGeoLab-learning-hub&urlpath=tree%2FGeoLab-learning-hub%2Freflectometry%2Fgnss-interferometric-reflectometry.ipynb&branch=main
-
+nbgitpuller: https://geolab.earthscope.cloud/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2FEarthScope%2FGeoLab-learning-hub&urlpath=lab%2Ftree%2FGeoLab-learning-hub%2Freflectometry%2Fgnss-interferometric-reflectometry.ipynb&branch=main
 tags: [GNSS, reflectometry, geodesy, earthscope_sdk]
 type: [notebook]
 difficulty: intermediate
