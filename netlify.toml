@@ -5,3 +5,19 @@
 [build.environment]
   NODE_VERSION = "24"
   BASE_URL = "/geolab/library"
+
+[[plugins]]
+package = "netlify-plugin-checklinks"
+
+  [plugins.inputs]
+  # The plugin scans the dynamically created cloud folder for all HTML files
+  entryPoints = ["**/*.html"] 
+
+  # CRITICAL: Forces the plugin to send HTTP requests to external domains
+  checkExternal = true 
+
+  # Tell the plugin to completely ignore SVG references
+  skipPatterns = [
+    ".*\\.svg$",
+    ".*\\.svg\\?.*"
+  ]
