@@ -1,0 +1,19 @@
+title: 3D Models
+author: ["Sophia Parafina"]
+github: https://github.com/sparafina-earthscope/3d_models
+author_institution: EarthScope Consortium
+maintainer contact: sophia.parafina@earthscope.org
+thumbnail: https://github.com/sparafina-earthscope/3d_models/blob/main/mt_saint_helens.jpg
+summary: >
+  Python notebook and application to visualize and generate 3D models of geologic features using the PyVista library. This project includes examples of 3D models of Mt. St. Helens and other mountains.
+description: >
+  This project demonstrates how to use external data, such as USGS DEMs, and visualize them as hillshaded 3D models, in an interactive 3d viewer, and export the DEMs as STL suitable for 3D printing. The project includes a Python notebook and a Streamlit application that allows users to explore the 3D models of geologic features.
+nbgitpuller: https://geolab.earthscope.cloud/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fsparafina-earthscope%2F3d_models&branch=main&urlpath=lab%2Ftree%2F3d_models%2Fmake_stl.ipynb
+tags: [DEM, 3d_printing, visualisation, geospatial, geoscience]
+type: [notebook, application]
+difficulty: [intermediate]
+time_commitment: [5 minutes]
+recommended_image: geolab_base
+recommended_resource_allocation: "4GB"
+citation: "Sophia Parafina (2026). 3D Models of Geologic Features. "
+last_updated: 2026-11-10
