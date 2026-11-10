@@ -15,3 +15,9 @@ package = "netlify-plugin-checklinks"
 
   # CRITICAL: Forces the plugin to send HTTP requests to external domains
   checkExternal = true 
+
+  # Tell the plugin to completely ignore SVG references
+  skipPatterns = [
+    ".*\\.svg$",
+    ".*\\.svg\\?.*"
+  ]
