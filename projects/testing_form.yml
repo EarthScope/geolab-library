@@ -1,0 +1,16 @@
+title: Testing Project Submission Form
+author: [sophia parafina]
+github: https://github.com/EarthScope/GeoLab-learning-hub/
+author_institution: earthscope
+maintainer contact: sophia.parafina@earthscope.org
+summary: >
+  This is a test of the submission form
+description: >
+  This is a test of the submission form running on a fork of the geolab-library
+nbgitpuller: https://geolab.earthscope.cloud/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2FEarthScope%2FGeoLab-learning-hub&branch=main&urlpath=lab%2Ftree%2FGeoLab-learning-hub%2Fbirthquake%2Fbirthquake.ipynb
+tags: [testl, form, submission]
+type: [notebook]
+difficulty: beginner
+time_commitment: 5 minutes
+recommended_resource_allocation: 4GB
+last_updated: 2026-11-11
