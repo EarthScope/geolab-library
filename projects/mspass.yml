@@ -1,0 +1,33 @@
+title: MsPASS - Massive Parallel Analysis System for Seismologists
+author: [Professor Gary Pavlis, Ian Wang] 
+github: https://github.com/mspass-team/mspass_tutorial/
+author_institution: MsPASS Team
+maintainer contact: pavlis@iu.edu
+thumbnail: https://github.com/mspass-team/mspass/blob/master/docs/source/_static/images/logos/mspass-banner-light.png
+summary: >
+  MsPASS is a container image for scalable seismic processing in GeoLab, combining Dask/Spark parallelism with MongoDB data management. This hands-on tutorial covers data objects, parallel workflows, and pulling waveforms straight from EarthScope's S3 archive.
+description: |
+  MsPASS (Massive Parallel Analysis System for Seismologists) is an open-source container image for scalable seismic processing. It combines Dask/Spark parallelism with a MongoDB database for waveforms and metadata. This tutorial is from the EarthScope 2026 MsPASS short course by Gary Pavlis and Ian Wang. You build a USArray dataset from EarthScope's S3 archive, then learn about MsPASS data objects, parallel workflows and cloud data access.
+
+  Complete the notebooks in this order:
+
+  1. Python_and_Jupyter_for_Scientific_Computing: optional primer on Python and Jupyter
+  2. DatasetCreationInstructions: guides you through steps 3–5
+  3. load_antelope: loads ANF arrival-time picks for March 2010
+  4. s3indexing: indexes EarthScope's S3 waveform archive
+  5. load_waveforms_s3: retrieves the waveforms into MongoDB
+  6. Session1: data objects, metadata and MongoDB
+  7. ParallelProcessingFundamentals: Dask schedulers, workers and the dashboard
+  8. Session2: turning a serial stacking workflow into a parallel one
+  9. Session3: reading miniSEED directly from S3 with boto3 and Dask
+
+  Optional extras are SeismogramAside (three-component Seismogram objects) and SeismicReduceOperatorExample (reduce operators). sidebar is a scratch notebook for database checks, and cleanup_for_restart resets your outputs so you can run the sessions again.
+nbgitpuller: https://geolab.earthscope.cloud/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fmspass-team%2Fmspass_tutorial&branch=master&urlpath=lab%2Ftree%2Fmspass_tutorial%2FEarthscope2026%2FPython_and_Jupyter_for_Scientific_Computing.ipynb
+tags: [mspass, seismology, dask, parallelization, mongodb, data_access, earthscope_sdk, miniseed, s3]
+type: ['notebook' , 'container image']
+difficulty: advanced
+time_commitment: 40 hours
+image_tag: ghcr.io/mspass-team/mspass:geolab-amd64
+recommended_resource_allocation: "29GB"
+citation: 
+last_updated: 07/16/2026
