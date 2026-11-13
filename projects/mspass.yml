@@ -3,7 +3,7 @@ author: [Professor Gary Pavlis, Ian Wang]
 github: https://github.com/mspass-team/mspass_tutorial/
 author_institution: MsPASS Team
 maintainer contact: pavlis@iu.edu
-thumbnail: https://github.com/mspass-team/mspass/blob/master/docs/source/_static/images/logos/mspass-banner-light.png
+thumbnail: https://github.com/mspass-team/mspass/blob/master/docs/source/_static/images/logos/mspass-banner-light.png?raw=true
 summary: >
   MsPASS is a container image for scalable seismic processing in GeoLab, combining Dask/Spark parallelism with MongoDB data management. This hands-on tutorial covers data objects, parallel workflows, and pulling waveforms straight from EarthScope's S3 archive.
 description: |
