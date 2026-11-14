@@ -1,6 +1,6 @@
 # Image Guidelines
 
-If you wish to contribute Software Container Images to the GeoLab Community Library, we ask that they meet certain standards for reproducibility and usability.
+If you wish to contribute Software Container Images to the GeoLab Community Library, we ask that they meet certain standards for reproducibility, usability, and security. EarthScope reserves the right to reject listings that do not meet these criteria.
 
 ## Functionality
 
@@ -13,6 +13,8 @@ If you wish to contribute Software Container Images to the GeoLab Community Libr
 2. The image is stored in a public container registry, i.e., Docker Hub, GitHub Container Registry, or Amazon ECR. The image tag must be provided in the template.yml file.
 
     Recommended: Your image tag id should contain a descriptive name and version number.
+
+3. Your repository should include a README.md file or other documentation that describes the included software and how to use it. We strongly recommend including at least one example notebook or tutorial.
 
 ## Security
 
