@@ -21,6 +21,8 @@ WIDGET = "anywidget"  # node type emitted by {geolab-library}
 HERE = pathlib.Path(__file__).resolve().parent
 # Relative to this file, not the current directory.
 PROJECTS = HERE / os.environ.get("GEOLAB_PROJECTS_DIR", "projects")
+# Where "Open in GeoLab" goes when a project has no nbgitpuller link.
+GEOLAB_URL = "https://geolab.earthscope.cloud"
 
 # PROJECTS = "/Users/sarahwilson/Code/geolab-library/.dummy_projects"
 # print(PROJECTS)
@@ -71,7 +73,7 @@ def collect_project(path):
         "tags": [str(t) for t in as_list(metadata.get("tags"))],
         "types": [str(t) for t in as_list(metadata.get("type"))],
         "thumbnail": thumbnail_url(metadata),
-        "url": metadata.get("nbgitpuller") or metadata.get("github"),
+        "url": text(metadata.get("nbgitpuller")) or GEOLAB_URL,
         "github": metadata.get("github"),
         "difficulty": text(metadata.get("difficulty")),
         "time_commitment": text(metadata.get("time_commitment")),

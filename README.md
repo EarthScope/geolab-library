@@ -19,7 +19,7 @@ pull request. See https://docs.earthscope.org/geolab/library/contributing for co
 | `summary` | Card description (searched) |
 | `tags` | Tag chips (clickable filters) |
 | `thumbnail` | Card image: a full URL, or a path in the `github` repo |
-| `nbgitpuller` | Where the card and "Open in GeoLab" link to |
+| `nbgitpuller` | Where "Open in GeoLab" links to; GeoLab's home page if empty |
 | `github` | "Source" link, and base for a relative `thumbnail` |
 
 The remaining template fields (`recommended_image`, `citation`, …) are customizable and appear in the long-form description pop-out.

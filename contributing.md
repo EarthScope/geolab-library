@@ -18,7 +18,7 @@ Our library considers project submissions of the following types:
     - Generally speaking, you should provide one template listing per repository. We recommend pointing your nbgitpuller link (below) to the repository readme. However, there are cases where this might not be the best strategy, for example:
       - The repository contains multiple, distinct projects or notebook sets. For example, the [geolab-tutorials]() repository contains different notebook series for getting started with geodetic data, seismic data, and advanced topics like dask. Each folder directory in the repository has its own listing, as they cover different, unique topics. 
       - Your project might need more than one listing, for example if you have both a software container image _and_ tutorial notebooks that demonstrate how to use the software, and those resources live in different github repositories. 
-    Keep in mind that each template.yml file submitted will generate one tile (catalog listing) in the library. The 'Open in Geolab' button on the tile will launch to your nbgitpuller link. 
+    Keep in mind that each template.yml file submitted will generate one tile (catalog listing) in the library. The 'Open in Geolab' button on the tile will launch to your nbgitpuller link. If you leave `nbgitpuller` empty, the button opens GeoLab without loading anything. 
 
     - Generating links:
       - If submitting a container image, create a [permalink](https://2i2c.org/jupyterhub-fancy-profiles/v0.7.0/permalink/) to the GeoLab launch page with your image tag populated.
