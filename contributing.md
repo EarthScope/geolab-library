@@ -27,8 +27,9 @@ Our library considers project submissions of the following types:
 
 
     - Include the URL to a thumbnail image representing your project or institution. We recommend adding the image file to _your_ github repository and linking to the raw github file. A 16:9 aspect ratio in landscape orientation is recommended to prevent unwanted image cropping.
-
     - Template fields are customizable. If there is a `key: value` pair that is important for your project that is not already in the template, you can add it to the file for your project. It will be displayed in the long-form pop-out when your project is clicked on in the library. Likewise, if a field in the template doesn't make sense for your project, you can omit it. 
+
+    - The `description` field supports basic Markdown: `#` headings, numbered and bulleted lists, ```` ``` ```` code blocks, `` `code` ``, `**bold**` and `[links](https://example.org)`. Start the field with `description: |` so line breaks are kept. Other Markdown, including HTML, is shown as plain text.
 
     - Add a handful of keyword tags to your project to improve searchability. Specific sub-domains, analysis techniques, data types, or key software packages are good choices. 
 
