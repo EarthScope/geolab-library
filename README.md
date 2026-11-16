@@ -87,6 +87,25 @@ when the counts are equal. It never edits files: fix the tags in the project
 YAML by hand. It does not match initials against full names (`S. Parafina` /
 `Sophia Parafina`).
 
+## Make a thumbnail
+
+[`scripts/thumbnailer.py`](scripts/thumbnailer.py) resizes an image to a
+16:9 thumbnail, 1280×720 by default. It needs Pillow (`pip install Pillow`),
+which isn't in `requirements.txt` because the site build doesn't use it.
+
+```bash
+python scripts/thumbnailer.py photo.jpg                # crop to fill: photo-thumb.jpg
+python scripts/thumbnailer.py logo.png --fit pad       # keep the whole image, pad with white
+python scripts/thumbnailer.py https://example.org/banner.png --fit pad -o banner-thumb.png
+```
+
+Cards show thumbnails at 16:9 and the pop-out crops them to 21:9, both
+centred, so keep the important part of the image in the middle. Use the
+default `--fit crop` for photos, maps and plots. Use `--fit pad` for logos
+and banners, which `crop` would cut off. Other options: `--width`,
+`--background` (padding colour) and `--quality` (JPEG/WebP). The output
+extension (`.png`, `.jpg` or `.webp`) sets the format.
+
 ## How it works
 
 ```

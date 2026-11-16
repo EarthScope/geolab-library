@@ -26,7 +26,7 @@ Our library considers project submissions of the following types:
       - If your notebooks need to run in a different environment or require more than the default resource allocation, _make a note_ in the pull request comment field and we will help generate a custom link that combines the server parameters with the nbgitpuller link. 
 
 
-    - Include the URL to a thumbnail image representing your project or institution. We recommend adding the image file to _your_ github repository and linking to the raw github file. A 16:9 aspect ratio in landscape orientation is recommended to prevent unwanted image cropping.
+    - Include the URL to a thumbnail image representing your project or institution. We recommend adding the image file to _your_ github repository and linking to the raw github file. A 16:9 aspect ratio in landscape orientation is recommended to prevent unwanted image cropping. [`scripts/thumbnailer.py`](https://github.com/EarthScope/geolab-library/blob/main/scripts/thumbnailer.py) resizes an image to 16:9 for you; see [Make a thumbnail](https://github.com/EarthScope/geolab-library#make-a-thumbnail) in the README.
 
     - Template fields are customizable. If there is a `key: value` pair that is important for your project that is not already in the template, you can add it to the file for your project. It will be displayed in the long-form pop-out when someone clicks on your project in the Library. Likewise, if a field in the template doesn't make sense for your project, you can omit it. 
 
