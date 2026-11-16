@@ -90,6 +90,20 @@ const STYLE = `
 .gl-dialog-body { padding:1rem 1.25rem 1.25rem; display:flex; flex-direction:column; gap:0.6rem; }
 .gl-dialog-title { margin:0; padding-right:2rem; font-size:1.3rem; line-height:1.3; }
 .gl-dialog-summary { margin:0; white-space:pre-line; line-height:1.5; }
+.gl-md { line-height:1.5; }
+.gl-md > :first-child { margin-top:0; }
+.gl-md > :last-child { margin-bottom:0; }
+.gl-md p { margin:0.5rem 0; white-space:pre-line; }
+.gl-md h3, .gl-md h4, .gl-md h5, .gl-md h6 { margin:1rem 0 0.35rem; font-size:1rem; line-height:1.3; }
+.gl-md h3 { font-size:1.1rem; }
+.gl-md ol, .gl-md ul { margin:0.4rem 0; padding-left:1.5rem; }
+.gl-md li { margin:0.15rem 0; }
+.gl-md code { font-size:0.88em; padding:0.05rem 0.3rem; border-radius:4px; background:var(--gl-chip);
+      overflow-wrap:anywhere; }
+.gl-md pre { margin:0.5rem 0; padding:0.6rem 0.75rem; border-radius:6px; background:var(--gl-chip);
+      overflow-x:auto; }
+.gl-md pre code { padding:0; background:none; overflow-wrap:normal; }
+.gl-md a { color:var(--gl-link); }
 .gl-close { position:absolute; top:0.5rem; right:0.5rem; z-index:1;
       width:2rem; height:2rem; font:inherit; font-size:1.2rem; line-height:1; border-radius:999px;
       border:1px solid var(--gl-border); background:var(--gl-card); color:inherit; cursor:pointer; }
@@ -115,6 +129,68 @@ function h(tag, props = {}, ...children) {
     el.append(child instanceof Node ? child : document.createTextNode(String(child)));
   }
   return el;
+}
+
+// Inline markdown: `code`, **bold** and [text](https://…) links.
+function mdInline(text) {
+  const out = [];
+  const re = /`([^`]+)`|\*\*([^*]+)\*\*|\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g;
+  let last = 0;
+  let m;
+  while ((m = re.exec(text))) {
+    if (m.index > last) out.push(text.slice(last, m.index));
+    if (m[1] !== undefined) out.push(h('code', {}, m[1]));
+    else if (m[2] !== undefined) out.push(h('strong', {}, m[2]));
+    else out.push(h('a', { href: m[4], target: '_blank', rel: 'noopener' }, m[3]));
+    last = re.lastIndex;
+  }
+  if (last < text.length) out.push(text.slice(last));
+  return out;
+}
+
+/**
+ * A small markdown subset for a project's long description: # headings,
+ * numbered and bulleted lists, ``` code blocks, paragraphs, and the inline
+ * forms in mdInline. Built from DOM nodes only (never innerHTML), so listing
+ * text can't inject markup. Plain text renders as before: paragraphs with
+ * their line breaks kept.
+ */
+function markdown(text) {
+  const lines = String(text).replace(/\r\n?/g, '\n').split('\n');
+  const blocks = [];
+  let para = [];
+  let list = null;
+  const endPara = () => { if (para.length) blocks.push(h('p', {}, mdInline(para.join('\n')))); para = []; };
+  const endList = () => { if (list) blocks.push(list); list = null; };
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    let m;
+    if (/^\s*```/.test(line)) {
+      endPara(); endList();
+      const code = [];
+      while (++i < lines.length && !/^\s*```/.test(lines[i])) code.push(lines[i]);
+      blocks.push(h('pre', {}, h('code', {}, code.join('\n'))));
+    } else if ((m = /^(#{1,4})\s+(.+)$/.exec(line))) {
+      // The dialog title is an h2, so # starts at h3.
+      endPara(); endList();
+      blocks.push(h(`h${m[1].length + 2}`, {}, mdInline(m[2])));
+    } else if ((m = /^\s*(?:(\d+)[.)]|[-*])\s+(.*)$/.exec(line))) {
+      endPara();
+      const tag = m[1] ? 'ol' : 'ul';
+      if (!list || list.tagName.toLowerCase() !== tag) {
+        endList();
+        list = h(tag, m[1] && m[1] !== '1' ? { start: m[1] } : {});
+      }
+      list.append(h('li', {}, mdInline(m[2])));
+    } else if (!line.trim()) {
+      endPara(); endList();
+    } else {
+      endList();
+      para.push(line);
+    }
+  }
+  endPara(); endList();
+  return blocks;
 }
 
 const norm = (s) => String(s ?? '').toLowerCase();
@@ -375,7 +451,7 @@ function render({ model, el }) {
         badges(item, close),
         tagChips(item, close),
         item.description ? h('p', { class: 'gl-dialog-summary' }, item.description) : null,
-        item.long_description ? h('p', { class: 'gl-dialog-summary' }, item.long_description) : null,
+        item.long_description ? h('div', { class: 'gl-md' }, markdown(item.long_description)) : null,
         meta.length ? h('dl', { class: 'gl-meta' }, meta.flatMap(([label, value]) => [h('dt', {}, label), h('dd', {}, value)])) : null,
         actions(item),
       ),
