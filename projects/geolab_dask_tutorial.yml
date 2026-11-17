@@ -1,7 +1,6 @@
 title: Using Dask in GeoLab
-author: [Asif Ashraf, Sophia Parafina]
+author: ["Asif Ashraf, EarthScope Consortium", "Sophia Parafina, EarthScope Consortium"]
 github: https://github.com/EarthScope/geolab-tutorials/tree/main/advanced_compute/dask
-author_institution: EarthScope Consortium
 maintainer contact: help@earthscope.org
 thumbnail: https://github.com/EarthScope/geolab-tutorials/blob/main/advanced_compute/dask/dask_thumb.png?raw=true 
 summary: >

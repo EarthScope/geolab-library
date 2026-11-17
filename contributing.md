@@ -23,7 +23,7 @@ Our library considers project submissions of the following types:
     - Generating links:
       - If submitting a container image, create a [permalink](https://2i2c.org/jupyterhub-fancy-profiles/v0.7.0/permalink/) to the GeoLab launch page with your image tag populated.
       - If submitting notebooks that run in the default GeoLab environment, create a [nbgitpuller link](https://docs.earthscope.org/geolab/advanced-topics/nbgitpuller) to your repository and use it as your launch_link. We recommend pointing at the README or first notebook in your series.
-      - If your notebooks need to run in a different environment or require more than the default resource allocation, _make a note_ in the pull request comment field and we will help generate a custom link that combines the server parameters with the nbgitpuller link, for use as your launch_link. 
+      - If your notebooks need to run in a different environment or require more than the default resource allocation, _make a note_ in the pull request comment field and we will help generate a custom link that combines the server parameters with the nbgitpuller link, for use as your `launch_link`. 
 
 
     - Include the URL to a thumbnail image representing your project or institution. We recommend adding the image file to _your_ github repository and linking to the raw github file. A 16:9 aspect ratio in landscape orientation is recommended to prevent unwanted image cropping. [`scripts/thumbnailer.py`](https://github.com/EarthScope/geolab-library/blob/main/scripts/thumbnailer.py) resizes an image to 16:9 for you; see [Make a thumbnail](https://github.com/EarthScope/geolab-library#make-a-thumbnail) in the README.

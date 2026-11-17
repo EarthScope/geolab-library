@@ -15,7 +15,7 @@ pull request. See https://docs.earthscope.org/geolab/library/contributing for co
 | Field | Used for |
 |-------|----------|
 | `title` | Card title |
-| `author` | Author names (clickable filter) |
+| `author` | Author names (clickable filter); each entry is `Name` or `Name, Institution` — institution shows only in the pop-out |
 | `summary` | Card description (searched) |
 | `tags` | Tag chips (clickable filters) |
 | `thumbnail` | Card image: a full URL, or a path in the `github` repo |

@@ -1,7 +1,6 @@
 title: Your Project Title
-author: [Author Name, Co-Author 1 Name, Co-Author 2 Name] 
+author: ["Author Name, Author Institution", "Co-Author 1 Name", "Co-Author 2 Name, Co-Author 2 Institution"]  # each entry is "Name" or "Name, Institution"; institution is optional
 github: https://github.com/YourOrg/YourRepo
-author_institution: Your Institution
 maintainer contact: your-email@example.com
 thumbnail: thumbnail.url
 summary: >

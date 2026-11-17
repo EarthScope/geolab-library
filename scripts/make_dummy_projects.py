@@ -72,9 +72,12 @@ def dummy_project(i, rng):
         thumbnail = None
     else:
         thumbnail = f"https://example.invalid/missing-{i}.png"
+    # Leave the institution out now and then, so the pop-out's empty-field handling gets tested.
+    institution = rng.choice(INSTITUTIONS) if rng.random() < 0.8 else None
+    author_field = [f"{a}, {institution}" if institution else a for a in authors]
     project = {
         "title": title,
-        "author": authors,
+        "author": author_field,
         "github": f"https://github.com/example/project-{i:04d}",
         "summary": dummy_summary(tags, rng),
         "launch_link": "https://geolab.earthscope.cloud/",
@@ -87,8 +90,6 @@ def dummy_project(i, rng):
     first, last = authors[0].lower().split()
     if rng.random() < 0.9:
         project["maintainer contact"] = f"{first}.{last}@example.org"
-    if rng.random() < 0.8:
-        project["author_institution"] = rng.choice(INSTITUTIONS)
     if rng.random() < 0.8:
         project["recommended_image"] = rng.choice(IMAGES)
     if rng.random() < 0.8:
