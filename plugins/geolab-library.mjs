@@ -70,12 +70,19 @@ const STYLE = `
       -webkit-box-orient:vertical; overflow:hidden; }
 .gl-authors { font-size:0.8rem; color:var(--gl-muted); }
 .gl-authors .gl-link { font-size:inherit; }
+.gl-institutions { font-size:0.78rem; color:var(--gl-muted); font-style:italic; }
+.gl-authors sup, .gl-institutions sup { font-style:normal; }
 .gl-badges { display:flex; flex-wrap:wrap; gap:0.35rem; }
 .gl-badge { font-size:0.75rem; line-height:1.4; padding:0.1rem 0.55rem; border-radius:999px;
       background:var(--gl-chip); color:var(--gl-muted); }
 .gl-tags { display:flex; flex-wrap:wrap; gap:0.25rem; margin-top:auto; padding-top:0.25rem; }
-.gl-actions { display:flex; gap:0.75rem; font-size:0.8rem; padding-top:0.25rem; }
+.gl-actions { display:flex; align-items:center; gap:0.75rem; font-size:0.8rem; padding-top:0.25rem; }
 .gl-actions a { color:var(--gl-link); }
+.gl-launch { display:inline-flex; align-items:center; gap:0.35rem; padding:0.4rem 0.9rem;
+      border-radius:6px; background:var(--gl-chip-on); color:var(--gl-chip-on-fg) !important;
+      font-weight:600; text-decoration:none; }
+.gl-launch:hover { filter:brightness(1.1); }
+.gl-launch::after { content:"↗"; }
 .gl-more { display:block; margin:1.25rem auto 0; font:inherit; padding:0.45rem 1.1rem;
       border:1px solid var(--gl-border); border-radius:6px; background:transparent;
       color:inherit; cursor:pointer; }
@@ -108,6 +115,7 @@ const STYLE = `
       width:2rem; height:2rem; font:inherit; font-size:1.2rem; line-height:1; border-radius:999px;
       border:1px solid var(--gl-border); background:var(--gl-card); color:inherit; cursor:pointer; }
 .gl-close:focus-visible, .gl-actions a:focus-visible, .gl-link:focus-visible { outline:2px solid var(--gl-chip-on); outline-offset:2px; }
+.gl-launch:focus-visible { outline-color:var(--gl-chip-on-fg); }
 .gl-meta { margin:0.25rem 0 0; display:grid; grid-template-columns:max-content 1fr; gap:0.35rem 1rem;
       font-size:0.85rem; }
 .gl-meta dt { font-weight:600; color:var(--gl-muted); }
@@ -201,7 +209,7 @@ function indexItems(items) {
     item,
     title: norm(item.title),
     tags: (item.tags ?? []).map(norm),
-    authors: (item.authors ?? []).map(norm),
+    authors: (item.authors ?? []).map((a) => norm(a.name)),
     desc: norm(item.description),
   }));
 }
@@ -325,7 +333,7 @@ function render({ model, el }) {
       const { item } = entry;
       if (state.types.size && ![...state.types].every((t) => item.types?.includes(t))) continue;
       if (state.tags.size && ![...state.tags].every((t) => item.tags?.includes(t))) continue;
-      if (state.authors.size && ![...state.authors].every((a) => item.authors?.includes(a))) continue;
+      if (state.authors.size && ![...state.authors].every((a) => item.authors?.some((x) => x.name === a))) continue;
       // Difficulty is a single value per project, so selecting several is an "either" match, not "all".
       if (state.difficulties.size && !state.difficulties.has(item.difficulty)) continue;
       const s = terms.length ? score(entry, terms) : 1;
@@ -387,11 +395,30 @@ function render({ model, el }) {
   // Card and pop-out pieces. `then` runs before a filter toggles (the pop-out closes itself).
   const external = (href) => ({ href, target: '_blank', rel: 'noopener' });
 
-  function authorLinks(item, then = () => {}) {
+  // `insts`, when given, numbers each author whose institution isn't the
+  // only one among the project's authors (see institutionNote).
+  function authorLinks(item, then = () => {}, insts = []) {
     return (item.authors ?? []).flatMap((a, i) => [
       i ? ', ' : null,
-      h('button', { class: 'gl-link', type: 'button', title: `Show projects by ${a}`, onclick: () => { then(); toggle(state.authors, a); } }, a),
+      h('button', { class: 'gl-link', type: 'button', title: `Show projects by ${a.name}`, onclick: () => { then(); toggle(state.authors, a.name); } }, a.name),
+      insts.length > 1 && a.institution ? h('sup', {}, String(insts.indexOf(a.institution) + 1)) : null,
     ]);
+  }
+
+  /** Each author's institution, in first-seen order, without repeats. */
+  function institutions(item) {
+    return [...new Set((item.authors ?? []).map((a) => a.institution).filter(Boolean))];
+  }
+
+  /** The dedup'd institution list: plain when there's only one, numbered to match authorLinks's superscripts otherwise. */
+  function institutionNote(insts) {
+    if (!insts.length) return null;
+    if (insts.length === 1) return h('div', { class: 'gl-institutions' }, insts[0]);
+    return h(
+      'div',
+      { class: 'gl-institutions' },
+      insts.flatMap((name, i) => [i ? '  ' : null, h('sup', {}, String(i + 1)), ` ${name}`]),
+    );
   }
 
   /** Clickable type chips (notebook, image, …), sorted like the type facet. */
@@ -413,13 +440,12 @@ function render({ model, el }) {
     return h('div', { class: 'gl-tags' }, item.tags.map((t) => chip(t, state.tags.has(t), () => { then(); toggle(state.tags, t); })));
   }
 
-  function actions(item, ...extra) {
+  function actions(item) {
     return h(
       'div',
       { class: 'gl-actions' },
-      item.url ? h('a', external(item.url), 'Open in GeoLab') : null,
+      item.url ? h('a', { ...external(item.url), class: 'gl-launch' }, 'Open in GeoLab') : null,
       item.github ? h('a', external(item.github), 'Source') : null,
-      ...extra,
     );
   }
 
@@ -432,8 +458,8 @@ function render({ model, el }) {
 
   function showDetails(item) {
     const close = () => dialog.close();
+    const insts = institutions(item);
     const meta = [
-      ['Institution', item.institution],
       ['Maintainer contact', item.contact && contactLink(item.contact)],
       ['Recommended image', item.image],
       ['Recommended resources', item.resources],
@@ -447,7 +473,8 @@ function render({ model, el }) {
         'div',
         { class: 'gl-dialog-body' },
         h('h2', { class: 'gl-dialog-title', id: 'gl-dialog-title' }, item.title),
-        (item.authors ?? []).length ? h('div', { class: 'gl-authors' }, authorLinks(item, close)) : null,
+        (item.authors ?? []).length ? h('div', { class: 'gl-authors' }, authorLinks(item, close, insts)) : null,
+        institutionNote(insts),
         badges(item, close),
         tagChips(item, close),
         item.description ? h('p', { class: 'gl-dialog-summary' }, item.description) : null,
@@ -462,6 +489,7 @@ function render({ model, el }) {
 
   function card(item) {
     const authors = item.authors ?? [];
+    const insts = institutions(item);
     return h(
       'article',
       {
@@ -476,10 +504,10 @@ function render({ model, el }) {
         // A button, so the pop-out is also reachable by keyboard.
         h('h3', { class: 'gl-title' }, h('button', { type: 'button', onclick: () => showDetails(item) }, item.title)),
         authors.length ? h('div', { class: 'gl-authors' }, authorLinks(item)) : null,
+        insts.length ? h('div', { class: 'gl-institutions' }, insts.join(', ')) : null,
         badges(item),
         item.description ? h('p', { class: 'gl-desc' }, item.description) : null,
         tagChips(item),
-        actions(item),
       ),
     );
   }

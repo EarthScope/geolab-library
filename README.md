@@ -15,11 +15,11 @@ pull request. See https://docs.earthscope.org/geolab/library/contributing for co
 | Field | Used for |
 |-------|----------|
 | `title` | Card title |
-| `author` | Author names (clickable filter) |
+| `author` | Author names (clickable filter); each entry is `Name` or `Name, Institution` — institution shows only in the pop-out |
 | `summary` | Card description (searched) |
 | `tags` | Tag chips (clickable filters) |
 | `thumbnail` | Card image: a full URL, or a path in the `github` repo |
-| `nbgitpuller` | Where the card and "Open in GeoLab" link to |
+| `launch_link` | Where the card and "Open in GeoLab" link to |
 | `github` | "Source" link, and base for a relative `thumbnail` |
 
 The remaining template fields (`recommended_image`, `citation`, …) are customizable and appear in the long-form description pop-out.

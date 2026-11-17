@@ -39,6 +39,25 @@ def text(value):
     return str(value).strip() or None
 
 
+def parse_authors(value):
+    """The `author` list as [{"name", "institution"}, ...].
+
+    Each entry is "Name" or "Name, Institution" (institution optional).
+    """
+    authors = []
+    for entry in as_list(value):
+        name, _, institution = str(entry).partition(",")
+        name = name.strip()
+        if not name:
+            continue
+        author = {"name": name}
+        institution = institution.strip()
+        if institution:
+            author["institution"] = institution
+        authors.append(author)
+    return authors
+
+
 def thumbnail_url(metadata):
     """An absolute thumbnail URL, or None.
 
@@ -67,16 +86,15 @@ def collect_project(path):
         "title": metadata.get("title") or path.stem,
         "description": metadata.get("summary"),
         "long_description": text(metadata.get("description")),
-        "authors": [str(a) for a in as_list(metadata.get("author"))],
+        "authors": parse_authors(metadata.get("author")),
         "tags": [str(t) for t in as_list(metadata.get("tags"))],
         "types": [str(t) for t in as_list(metadata.get("type"))],
         "thumbnail": thumbnail_url(metadata),
-        "url": metadata.get("nbgitpuller") or metadata.get("github"),
+        "url": metadata.get("launch_link") or metadata.get("github"),
         "github": metadata.get("github"),
         "difficulty": text(metadata.get("difficulty")),
         "time_commitment": text(metadata.get("time_commitment")),
         # Shown only in the card's detail pop-out.
-        "institution": text(metadata.get("author_institution")),
         "contact": text(metadata.get("maintainer contact")),
         "image": text(metadata.get("recommended_image")),
         "resources": text(metadata.get("recommended_resource_allocation")),
