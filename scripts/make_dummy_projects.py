@@ -77,7 +77,7 @@ def dummy_project(i, rng):
         "author": authors,
         "github": f"https://github.com/example/project-{i:04d}",
         "summary": dummy_summary(tags, rng),
-        "nbgitpuller": "https://geolab.earthscope.cloud/",
+        "launch_link": "https://geolab.earthscope.cloud/",
         "tags": tags,
         "type": type
     }

@@ -9,7 +9,7 @@ summary: >
   included in the description.
 description: >
   A longer descritiption (1-4 paragraphs) of the goals, methods, and outcomes of your project  
-nbgitpuller: https://geolab.earthscope.cloud/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2FYourOrg%2FYourRepo&urlpath=tree%2FYourRepo%2Fyour-notebook.ipynb&branch=main
+launch_link: https://geolab.earthscope.cloud/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2FYourOrg%2FYourRepo&urlpath=tree%2FYourRepo%2Fyour-notebook.ipynb&branch=main
 tags: [tag_1, tag_2, tag_N]
 type: 'notebook' or 'container image' or both formatted as a list in square brackets
 difficulty: beginner, intermediate, advanced, or expert

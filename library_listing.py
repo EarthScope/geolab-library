@@ -71,7 +71,7 @@ def collect_project(path):
         "tags": [str(t) for t in as_list(metadata.get("tags"))],
         "types": [str(t) for t in as_list(metadata.get("type"))],
         "thumbnail": thumbnail_url(metadata),
-        "url": metadata.get("nbgitpuller") or metadata.get("github"),
+        "url": metadata.get("launch_link") or metadata.get("github"),
         "github": metadata.get("github"),
         "difficulty": text(metadata.get("difficulty")),
         "time_commitment": text(metadata.get("time_commitment")),
