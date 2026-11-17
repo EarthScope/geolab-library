@@ -20,10 +20,10 @@ Our library considers project submissions of the following types:
       - Your project might need more than one listing. For example, if you have both a software container image _and_ tutorial notebooks that demonstrate how to use the software, and those resources live in different github repositories. 
     Keep in mind that each template.yml file submitted will generate one tile (catalog listing) in the Library. The 'Open in Geolab' button on the tile will launch to your launch_link. 
 
-    - Generating links:
-      - If submitting a container image, create a [permalink](https://2i2c.org/jupyterhub-fancy-profiles/v0.7.0/permalink/) to the GeoLab launch page with your image tag populated.
-      - If submitting notebooks that run in the default GeoLab environment, create a [nbgitpuller link](https://docs.earthscope.org/geolab/advanced-topics/nbgitpuller) to your repository and use it as your launch_link. We recommend pointing at the README or first notebook in your series.
-      - If your notebooks need to run in a different environment or require more than the default resource allocation, _make a note_ in the pull request comment field and we will help generate a custom link that combines the server parameters with the nbgitpuller link, for use as your `launch_link`. 
+    - Generating a Launch Link:
+      - If submitting a container image, create a [permalink](https://2i2c.org/jupyterhub-fancy-profiles/v0.7.0/permalink/). To do this, open the GeoLab server launch page, select your environment (custom image tag) and resource allocation, then click 'Permalink' on the upper right. This will copy the launch page configuration link to your clipboard.
+      - If submitting notebooks that run in the default GeoLab environment, create a [nbgitpuller link](https://docs.earthscope.org/geolab/advanced-topics/nbgitpuller) to your repository and use it as your launch_link. We recommend pointing at the README or first notebook in your series. Note that to use `nbgitpuller` in custom Containter Images, `nbgitpuller` must be installed in the image. 
+      - If you need *both* a custom environment or resource configuration, _and_ need to pull notebooks in from github, use the [`link_stitcher.py` script](https://github.com/EarthScope/geolab-library/blob/main/scripts/link_stitcher.py)to generate a hybrid `launch_link`. 
 
 
     - Include the URL to a thumbnail image representing your project or institution. We recommend adding the image file to _your_ github repository and linking to the raw github file. A 16:9 aspect ratio in landscape orientation is recommended to prevent unwanted image cropping. [`scripts/thumbnailer.py`](https://github.com/EarthScope/geolab-library/blob/main/scripts/thumbnailer.py) resizes an image to 16:9 for you; see [Make a thumbnail](https://github.com/EarthScope/geolab-library#make-a-thumbnail) in the README.
