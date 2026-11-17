@@ -74,8 +74,13 @@ const STYLE = `
 .gl-badge { font-size:0.75rem; line-height:1.4; padding:0.1rem 0.55rem; border-radius:999px;
       background:var(--gl-chip); color:var(--gl-muted); }
 .gl-tags { display:flex; flex-wrap:wrap; gap:0.25rem; margin-top:auto; padding-top:0.25rem; }
-.gl-actions { display:flex; gap:0.75rem; font-size:0.8rem; padding-top:0.25rem; }
+.gl-actions { display:flex; align-items:center; gap:0.75rem; font-size:0.8rem; padding-top:0.25rem; }
 .gl-actions a { color:var(--gl-link); }
+.gl-launch { display:inline-flex; align-items:center; gap:0.35rem; padding:0.4rem 0.9rem;
+      border-radius:6px; background:var(--gl-chip-on); color:var(--gl-chip-on-fg) !important;
+      font-weight:600; text-decoration:none; }
+.gl-launch:hover { filter:brightness(1.1); }
+.gl-launch::after { content:"↗"; }
 .gl-more { display:block; margin:1.25rem auto 0; font:inherit; padding:0.45rem 1.1rem;
       border:1px solid var(--gl-border); border-radius:6px; background:transparent;
       color:inherit; cursor:pointer; }
@@ -108,6 +113,7 @@ const STYLE = `
       width:2rem; height:2rem; font:inherit; font-size:1.2rem; line-height:1; border-radius:999px;
       border:1px solid var(--gl-border); background:var(--gl-card); color:inherit; cursor:pointer; }
 .gl-close:focus-visible, .gl-actions a:focus-visible, .gl-link:focus-visible { outline:2px solid var(--gl-chip-on); outline-offset:2px; }
+.gl-launch:focus-visible { outline-color:var(--gl-chip-on-fg); }
 .gl-meta { margin:0.25rem 0 0; display:grid; grid-template-columns:max-content 1fr; gap:0.35rem 1rem;
       font-size:0.85rem; }
 .gl-meta dt { font-weight:600; color:var(--gl-muted); }
@@ -413,13 +419,12 @@ function render({ model, el }) {
     return h('div', { class: 'gl-tags' }, item.tags.map((t) => chip(t, state.tags.has(t), () => { then(); toggle(state.tags, t); })));
   }
 
-  function actions(item, ...extra) {
+  function actions(item) {
     return h(
       'div',
       { class: 'gl-actions' },
-      item.url ? h('a', external(item.url), 'Open in GeoLab') : null,
+      item.url ? h('a', { ...external(item.url), class: 'gl-launch' }, 'Open in GeoLab') : null,
       item.github ? h('a', external(item.github), 'Source') : null,
-      ...extra,
     );
   }
 
@@ -479,7 +484,6 @@ function render({ model, el }) {
         badges(item),
         item.description ? h('p', { class: 'gl-desc' }, item.description) : null,
         tagChips(item),
-        actions(item),
       ),
     );
   }
