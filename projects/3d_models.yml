@@ -3,7 +3,7 @@ author: ["Sophia Parafina"]
 github: https://github.com/sparafina-earthscope/3d_models
 author_institution: EarthScope Consortium
 maintainer contact: sophia.parafina@earthscope.org
-thumbnail: https://github.com/sparafina-earthscope/3d_models/blob/main/mt_saint_helens.jpg
+thumbnail: https://github.com/sparafina-earthscope/3d_models/blob/main/mt_saint_helens.jpg?raw=true
 summary: >
   Python notebook and application to visualize and generate 3D models of geologic features using the PyVista library. This project includes examples of 3D models of Mt. St. Helens and other mountains.
 description: >
