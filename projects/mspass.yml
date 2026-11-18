@@ -41,7 +41,7 @@ description: |
 
   Optional extras are `SeismogramAside` (three-component `Seismogram` objects) and `SeismicReduceOperatorExample` (reduce operators). `sidebar` is a scratch notebook for database checks, and `cleanup_for_restart` resets your outputs so you can run the sessions again.
 tags: [mspass, seismology, dask, parallelization, mongodb, data_access, earthscope_sdk, miniseed, s3]
-nbgitpuller:
+launch_link: https://geolab.earthscope.cloud/hub/login?next=/hub/spawn%23fancy-forms-config=%7B%22profile%22%3A%22choose-your-environment-and-resources%22%2C%22image%22%3A%22unlisted_choice%22%2C%22image%3Aunlisted_choice%22%3A%22ghcr.io%2Fmspass-team%2Fmspass%3Ageolab%22%2C%22resource_allocation%22%3A%22mem_29_gb%22%2C%22resource_allocation%3Aunlisted_choice%22%3A%22%22%7D
 type: ['notebook' , 'container image']
 difficulty: advanced
 time_commitment: 40 hours
