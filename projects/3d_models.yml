@@ -11,8 +11,8 @@ description: >
 nbgitpuller: https://geolab.earthscope.cloud/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fsparafina-earthscope%2F3d_models&branch=main&urlpath=lab%2Ftree%2F3d_models%2Fmake_stl.ipynb
 tags: [DEM, 3d_printing, visualisation, geospatial, geoscience]
 type: [notebook, application]
-difficulty: [intermediate]
-time_commitment: [5 minutes]
+difficulty: intermediate
+time_commitment: 5 minutes
 recommended_image: geolab_base
 recommended_resource_allocation: "4GB"
 citation: "Sophia Parafina (2026). 3D Models of Geologic Features. "
