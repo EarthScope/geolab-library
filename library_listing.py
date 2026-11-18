@@ -21,6 +21,8 @@ WIDGET = "anywidget"  # node type emitted by {geolab-library}
 HERE = pathlib.Path(__file__).resolve().parent
 # Relative to this file, not the current directory.
 PROJECTS = HERE / os.environ.get("GEOLAB_PROJECTS_DIR", "projects")
+# Where "Open in GeoLab" goes when a project has no nbgitpuller link.
+GEOLAB_URL = "https://geolab.earthscope.cloud"
 
 # PROJECTS = "/Users/sarahwilson/Code/geolab-library/.dummy_projects"
 # print(PROJECTS)
