@@ -19,6 +19,7 @@ pull request. See https://docs.earthscope.org/geolab/library/contributing for co
 | `summary` | Card description (searched) |
 | `tags` | Tag chips (clickable filters) |
 | `thumbnail` | Card image: a full URL, or a path in the `github` repo |
+| `thumbnail_fit` | Optional. Thumbnails show whole, on white; `crop` fills the image box instead |
 | `launch_link` | Where the card and "Open in GeoLab" link to |
 | `github` | "Source" link, and base for a relative `thumbnail` |
 
@@ -99,10 +100,13 @@ python scripts/thumbnailer.py logo.png --fit pad       # keep the whole image, p
 python scripts/thumbnailer.py https://example.org/banner.png --fit pad -o banner-thumb.png
 ```
 
-Cards show thumbnails at 16:9 and the pop-out crops them to 21:9, both
-centred, so keep the important part of the image in the middle. Use the
-default `--fit crop` for photos, maps and plots. Use `--fit pad` for logos
-and banners, which `crop` would cut off. Other options: `--width`,
+Cards show thumbnails in a 16:9 box and the pop-out in a 21:9 box. By
+default the whole image is shown, centred on white, so an image of another
+shape gets white bars. With `thumbnail_fit: crop` in a listing, the image
+fills the box instead and its edges are trimmed, so keep the important part
+in the middle. Making the image 16:9 avoids both bars and trimming on cards.
+Use the default `--fit crop` for photos, maps and plots. Use `--fit pad` for
+logos and banners, which `crop` would cut off. Other options: `--width`,
 `--background` (padding colour) and `--quality` (JPEG/WebP). The output
 extension (`.png`, `.jpg` or `.webp`) sets the format.
 

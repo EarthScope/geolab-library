@@ -92,6 +92,8 @@ def collect_project(path):
         "tags": [str(t) for t in as_list(metadata.get("tags"))],
         "types": [str(t) for t in as_list(metadata.get("type"))],
         "thumbnail": thumbnail_url(metadata),
+        # Thumbnails are padded (whole image on white) unless this is "crop".
+        "thumbnail_fit": "crop" if (text(metadata.get("thumbnail_fit")) or "").lower() == "crop" else None,
         "url": metadata.get("launch_link") or metadata.get("github"),
         "github": metadata.get("github"),
         "difficulty": text(metadata.get("difficulty")),

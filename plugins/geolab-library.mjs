@@ -58,9 +58,14 @@ const STYLE = `
 .gl-grid { display:grid; gap:1rem; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); }
 .gl-card { display:flex; flex-direction:column; border:1px solid var(--gl-border);
       border-radius:8px; background:var(--gl-card); overflow:hidden; }
-.gl-thumb { aspect-ratio:16/9; background:var(--gl-thumb); display:flex; align-items:center;
+.gl-thumb { aspect-ratio:16/9; overflow:hidden; /* else a tall image stretches the box past 16:9 */
+      background:var(--gl-thumb); display:flex; align-items:center;
       justify-content:center; color:var(--gl-muted); font-size:1.6rem; font-weight:600; }
 .gl-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+/* Default (pad): whole image on white, so transparent logos stay legible in dark mode.
+   thumbnail_fit: crop drops gl-pad, so the image fills the box. */
+.gl-thumb.gl-pad { background:#fff; }
+.gl-thumb.gl-pad img { object-fit:contain; }
 .gl-body { padding:0.75rem; display:flex; flex-direction:column; gap:0.4rem; flex:1; }
 .gl-title { margin:0; font-size:1rem; font-weight:600; line-height:1.3; }
 .gl-title button { font:inherit; color:inherit; text-align:left; background:none; border:none;
@@ -387,7 +392,7 @@ function render({ model, el }) {
     const fallback = () => h('div', { class: 'gl-thumb', 'aria-hidden': 'true' }, String(item.title ?? '?').trim().charAt(0).toUpperCase());
     if (!item.thumbnail) return fallback();
     const img = h('img', { src: item.thumbnail, alt: '', loading, decoding: 'async' });
-    const box = h('div', { class: 'gl-thumb' }, img);
+    const box = h('div', { class: item.thumbnail_fit === 'crop' ? 'gl-thumb' : 'gl-thumb gl-pad' }, img);
     img.addEventListener('error', () => box.replaceWith(fallback()), { once: true });
     return box;
   }
