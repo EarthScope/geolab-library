@@ -114,7 +114,7 @@ projects/*.yml ──► library_listing.py ──► {geolab-library} widget �
                     YAML → item list)       search, filters, paging)
 ```
 
-1. [`project_tiles.md`](project_tiles.md) contains a `{geolab-library}`
+1. [`projects.md`](projects.md) contains a `{geolab-library}`
    directive. The directive, defined in
    [`plugins/geolab-library.mjs`](plugins/geolab-library.mjs), outputs an
    empty [anywidget](https://mystmd.org/guide/widgets) node.

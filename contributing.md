@@ -16,7 +16,7 @@ Our library considers project submissions of the following types:
 2. __Make a local copy of the template.yml file,__ which is located at the root of the [geolab-library github repository](https://github.com/EarthScope/geolab-library/blob/main/template.yml). Rename the copy with your project name and fill in the metadata about your project. A few hints:
 
     - Generally speaking, you should provide one template listing per repository. We recommend pointing your launch_link (below) to the repository readme. However, there are cases where this might not be the best strategy, for example:
-      - The repository contains multiple, distinct projects or notebook sets. For example, the [geolab-tutorials]() repository contains different notebook series for getting started with geodetic data, seismic data, and advanced topics like dask. Each folder directory in the repository has its own listing, as they cover different, unique topics. 
+      - The repository contains multiple, distinct projects or notebook sets. For example, the [geolab-tutorials](https://github.com/EarthScope/geolab-tutorials) repository contains different notebook series for getting started with geodetic data, seismic data, and advanced topics like dask. Each folder directory in the repository has its own listing, as they cover different, unique topics. 
       - Your project might need more than one listing. For example, if you have both a software container image _and_ tutorial notebooks that demonstrate how to use the software, and those resources live in different github repositories. 
     Keep in mind that each template.yml file submitted will generate one tile (catalog listing) in the Library. The 'Open in Geolab' button on the tile will launch to your launch_link. 
 
@@ -37,6 +37,6 @@ Our library considers project submissions of the following types:
 
 3. __Make a pull request (PR) in the [geolab-library github repository](https://github.com/EarthScope/geolab-library) to add your template.yml file to the `/projects` directory.__ An admin will review your project and pull request, and contact you if any questions, clarifications, or fixes need to be addressed.
 
-4. That's it! Once your PR is merged, your project will be available on the [Project Directory](project_tiles.md) page for other community users.
+4. That's it! Once your PR is merged, your project will be available on the [Project Directory](projects.md) page for other community users.
 
 5. __Make a post on our [community forum](https://earthscope.discourse.group/)__ to share your work! 
