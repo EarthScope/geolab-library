@@ -6,7 +6,7 @@ Leveraging the community's domain expertise and an author-ownership model, the N
 
 ## Using the library
 
-Go the [Project Directory page](project_tiles.md) to browse projects. Use the search bar, or click a tag or author to filter projects. Click on any project for more details, citation information, and links to launch in GeoLab or browse the source code directly in github. 
+Go the [Project Directory page](projects.md) to browse projects. Use the search bar, or click a tag or author to filter projects. Click on any project for more details, citation information, and links to launch in GeoLab or browse the source code directly in github. 
 
 The library contains two kinds of resources:
 1. Python Notebooks: these are designed to launch in GeoLab with a single click -- no manual cloning or software setup required. 

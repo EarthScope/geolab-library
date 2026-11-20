@@ -14,7 +14,7 @@ project:
 
   toc:
     - file: welcome.md
-    - file: project_tiles.md
+    - file: projects.md
     - file: contributing.md
       title: Contributing to the Library
       children:
