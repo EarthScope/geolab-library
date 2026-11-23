@@ -60,15 +60,25 @@ def parse_authors(value):
     return authors
 
 
+# A file page or download link on github.com: owner/repo, then ref/path.
+GITHUB_FILE = re.compile(r"https?://github\.com/([^/]+/[^/]+)/(?:blob|raw)/([^?#]+)")
+
+
 def thumbnail_url(metadata):
     """An absolute thumbnail URL, or None.
 
-    Absolute URLs pass through; a relative path is resolved against the
+    A github.com file link (`/blob/...`, with or without `?raw=true`, or
+    `/raw/...`) becomes its raw.githubusercontent.com URL: github.com only
+    redirects there, twice, and is slower and more rate-limited. Other
+    absolute URLs pass through. A relative path is resolved against the
     project's GitHub repo (default branch) like the template describes.
     """
-    thumb = metadata.get("thumbnail")
+    thumb = text(metadata.get("thumbnail"))
     if not thumb:
         return None
+    match = GITHUB_FILE.match(thumb)
+    if match:
+        return f"https://raw.githubusercontent.com/{match.group(1)}/{match.group(2)}"
     if re.match(r"https?://", thumb):
         return thumb
     match = re.match(r"https?://github\.com/([^/]+/[^/]+?)(?:\.git)?/?$", metadata.get("github") or "")
