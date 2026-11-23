@@ -1,0 +1,27 @@
+title: "AGU24 workshop: Mastering Geospatial Visualizations with GMT/PyGMT"
+author: [Wei Ji Leong, Yvonne Fröhlich, Jing-Hui Tong, Federico Esteban, Max Jones, Andre Luiz Belem]
+github: https://github.com/GenericMappingTools/agu24workshop
+author_institution: The PyGMT Team
+maintainer contact: help@earthscope.org
+thumbnail: https://github.com/GenericMappingTools/agu24workshop/releases/download/v1.0.0/thumbnail.png
+summary: This workshop aims to provide a detailed technical demonstration of GMT/PyGMT's capabilities in creating maps and visualizations of geospatial, geophysical, and planetary data across a wide range of applications
+description: >
+  PyGMT, a Python library built on top of the Generic Mapping Tools (GMT), offers an
+  intuitive and accessible interface for generating high-quality figures suitable for
+  publication. Suitable for both beginner and advanced Python users, this workshop will
+  cover advanced techniques for manipulating geospatial and geophysical data, widely
+  utilized in the Earth, Ocean and Planetary Science communities, providing participants
+  with the necessary skills to extract meaningful insights and effectively communicate
+  their findings through clear and informative maps and visualizations. By exploring
+  GMT/PyGMT's functionalities, participants will have the opportunity to learn how to
+  create customized maps and data visualizations tailored to the specific needs of their
+  research areas.
+nbgitpuller: https://geolab.earthscope.cloud/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2FGenericMappingTools%2Fagu24workshop&urlpath=lab%2Ftree%2Fagu24workshop%2Fbook%2Ftut01_firstfigure.ipynb&branch=main
+tags: [pygmt, gmt, seismology]
+type: [notebook]
+difficulty: intermediate
+time_commitment: 3 hours
+recommended_image: geolab_base
+recommended_resource_allocation: 4GB
+citation: Leong, W. J., Fröhlich, Y., Tong, J.-H., Esteban, F., Jones, M., & Belém, A. L. (2024). Mastering Geospatial Visualizations with GMT/PyGMT (Version 1.0.0) [Computer software]. https://doi.org/10.5281/zenodo.15809717
+last_updated: 2026-11-16
