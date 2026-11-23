@@ -18,7 +18,7 @@ pull request. See https://docs.earthscope.org/geolab/library/contributing for co
 | `author` | Author names (clickable filter); each entry is `Name` or `Name, Institution` — institution shows only in the pop-out |
 | `summary` | Card description (searched) |
 | `tags` | Tag chips (clickable filters) |
-| `thumbnail` | Card image: a full URL, or a path in the `github` repo |
+| `thumbnail` | Card image: a full URL, or a path in the `github` repo. GitHub file links are served from raw.githubusercontent.com |
 | `thumbnail_fit` | Optional. Thumbnails show whole, on white; `crop` fills the image box instead |
 | `launch_link` | Where the card and "Open in GeoLab" link to |
 | `github` | "Source" link, and base for a relative `thumbnail` |
@@ -130,7 +130,8 @@ projects/*.yml ──► library_listing.py ──► {geolab-library} widget �
    - ranked text search over title, summary, authors and tags
    - tag and author filters (click any chip or author name)
    - 24 cards at a time with "Show more"; only those cards are in the DOM
-   - thumbnails with `loading="lazy"`, and a letter placeholder if missing
+   - thumbnails with `loading="lazy"`; a failed load is retried after 1, 3
+     and 9 seconds before a letter placeholder is shown
    - filter state in the URL (`?q=…&tag=…&author=…`) for sharing links
    - light/dark colors that follow the site theme
 

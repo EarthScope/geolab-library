@@ -33,6 +33,9 @@ function relativePath(fromDir, toFile) {
 
 // --- Browser ---
 
+// Times to retry a thumbnail that fails to load before showing its letter.
+const THUMB_RETRIES = 3;
+
 const STYLE = `
 .gl { --gl-border:#d0d7de; --gl-muted:#57606a; --gl-card:#fff; --gl-chip:#eef2f6;
       --gl-chip-on:#0969da; --gl-chip-on-fg:#fff; --gl-link:#0969da; --gl-thumb:#f0f3f6;
@@ -393,7 +396,20 @@ function render({ model, el }) {
     if (!item.thumbnail) return fallback();
     const img = h('img', { src: item.thumbnail, alt: '', loading, decoding: 'async' });
     const box = h('div', { class: item.thumbnail_fit === 'crop' ? 'gl-thumb' : 'gl-thumb gl-pad' }, img);
-    img.addEventListener('error', () => box.replaceWith(fallback()), { once: true });
+    // A failed load is often brief (a dropped connection, a rate limit), so
+    // retry after 1, 3 and 9 seconds before showing the letter. The retry
+    // parameter makes the browser fetch again instead of reusing the failure.
+    let tries = 0;
+    img.addEventListener('error', () => {
+      if (!box.isConnected) return; // card re-rendered or pop-out closed
+      if (tries >= THUMB_RETRIES) return box.replaceWith(fallback());
+      const delay = 1000 * 3 ** tries++;
+      setTimeout(() => {
+        const url = new URL(item.thumbnail);
+        url.searchParams.set('retry', tries);
+        img.src = url.href;
+      }, delay);
+    });
     return box;
   }
 
