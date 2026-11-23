@@ -35,14 +35,14 @@ with that interpreter.
 
 ```bash
 pip install -r requirements.txt
-npx mystmd@~1.10.1 start        # http://localhost:3000/project-tiles
+npx mystmd@~1.11.0 start        # http://localhost:3000/projects
 ```
 
-`~1.10.1` matches what Netlify installs (see
+`~1.11.0` matches what Netlify installs (see
 [`build-docs.sh`](https://github.com/EarthScope/docs.earthscope.org/blob/main/scripts/build-docs.sh)).
 Restart `myst start` after adding or editing files in `projects/`.
 
-`npx mystmd@~1.10.1 build --html` writes a static site to `_build/html/`.
+`npx mystmd@~1.11.0 build --html` writes a static site to `_build/html/`.
 
 ## Test with many projects
 
@@ -52,7 +52,7 @@ Point the build at that folder with `GEOLAB_PROJECTS_DIR`:
 
 ```bash
 python scripts/make_dummy_projects.py --count 1000
-GEOLAB_PROJECTS_DIR=.dummy-projects npx mystmd@~1.10.1 start
+GEOLAB_PROJECTS_DIR=.dummy-projects npx mystmd@~1.11.0 start
 ```
 
 Options: `--count N` (default 1000), `--seed N` (same seed, same data),
